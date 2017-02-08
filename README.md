@@ -1,1 +1,1 @@
-Blackjack Game
+This blackjack game runs using Qt Creator with c++. In order to play the game, Run Qt Creator, then add all of the appropriate files to their respected areas. Make sure to edit the mainwindow.ui using notepad or a text editor and then reload the program again. Also, make sure the image files are located in the build directory folder, otherwise the images will not show up. Enjoy!!
