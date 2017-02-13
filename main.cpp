@@ -1,8 +1,16 @@
 #include "mainwindow.h"
+#include "card.h"
+#include "deck.h"
+#include <string>
+#include <vector>
+#include <list>
 #include <QApplication>
 #include <QLabel>
+
+//For using rand()
 #include <time.h>
 #include <stdlib.h>
+
 #include <iostream>
 using namespace std;
 
