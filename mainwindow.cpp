@@ -8,11 +8,14 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
+
+
     ui->setupUi(this);
 
-    //Deck temp;
-    //temp.Display_Deck();
-
+// If you want to run this as a console program, uncomment everthing
+// from this line until line 164. Also make sure to comment
+// everything from main.cpp from line 29 to the return statement
+/*
     vector<Card> Deck;
     vector<Card> Hand;
     vector<Card> DealerHand;
@@ -73,10 +76,12 @@ MainWindow::MainWindow(QWidget *parent) :
                         cout << "\n\nYou currently have the following cards:\n";
                         for (int i = 0; i < Hand.size(); i++)
                             cout << " " << Hand[i].getName() << endl;
+
                         cout << "the current value of your hand is " << value << endl;
                         cout << "The Dealer currently has a\n " << DealerHand[0].getName() << "\n a face down card";
                         cout << "\nSelect an option :\n1)Hit\n2)Hold\n3)End Game\n";
                         cin >> hitHold;
+
 
                         if (hitHold == 1)
                         {
@@ -156,15 +161,8 @@ MainWindow::MainWindow(QWidget *parent) :
             }
 
         }
+*/
 
-
-
-
-    int random_card, random_suit;
-    random_card = randomizer(13);
-    random_suit = randomizer(4);
-
-    QString current_card = Get_Card_Name(random_card, random_suit);
     user_card_size = dealers_card_size = 0;
     //user_cards[0].card_number = random_card;
     //user_cards[0].card_suit = random_suit;
@@ -200,7 +198,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     for (int i = 0; i < 10; ++i) {
         if (i == 0 || i == 2)
-            images[i]->setPixmap(QString("Ace of Spades.png"));
+            images[i]->setPixmap(QString("Pictures/Ace of Spades.png"));
         else if (i == 1 || i == 3)
             images[i]->setPixmap(QString("BackSide.png"));
         else
@@ -225,79 +223,27 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-int MainWindow::randomizer(int range) {
-
-    return (rand() % range);
+void MainWindow::Show_Card(string PictureName, int label_number) {
+     QString CardName = QString::fromStdString(PictureName + ".png");
+     images[label_number]->setPixmap(CardName);
 }
 
-QString MainWindow::Get_Card_Name(int card_index, int color_index) {
-    QString card_name;
-
-    switch(card_index) {
-       case 0:
-        card_name = "Ace";
-        break;
-       case 1:
-        card_name = "Two";
-        break;
-       case 2:
-        card_name = "Three";
-        break;
-       case 3:
-        card_name = "Four";
-        break;
-       case 4:
-        card_name = "Five";
-        break;
-       case 5:
-        card_name = "Six";
-        break;
-       case 6:
-        card_name = "Seven";
-        break;
-       case 7:
-        card_name = "Eight";
-        break;
-       case 8:
-        card_name = "Nine";
-        break;
-       case 9:
-        card_name = "Ten";
-        break;
-       case 10:
-        card_name = "Jack";
-        break;
-       case 11:
-        card_name = "Queen";
-        break;
-       case 12:
-        card_name = "King";
-        break;
+void MainWindow::Display_Cards(vector <Card> &Hand, vector <Card> &DealerHand ) {
+    for (int i = 0; i < 4; ++i) {
+       if (i > 1)
+            cout << "The dealers card number " << i-1 << " is "
+                 << DealerHand[i-2].getName() << endl;
+       else
+           cout << "The Players card number " << i+1
+                << " is " << Hand[i].getName() << endl;
     }
-
-    card_name += " of ";
-
-    switch(color_index) {
-       case 0:
-        card_name += "Diamonds";
-        break;
-       case 1:
-        card_name += "Hearts";
-        break;
-       case 2:
-        card_name += "Clubs";
-        break;
-       case 3:
-        card_name += "Spades";
-    }
-    return card_name;
 }
 
 void MainWindow::on_pushButton_clicked()
 {
 
     if (Image_File == "BackSide.png"){
-        Image_File = "Ace of Spades.png";
+        Image_File = "Pictures/Ace of Spades.png";
     }
 
     else {
