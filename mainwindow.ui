@@ -14,7 +14,7 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QPushButton" name="pushButton">
+   <widget class="QPushButton" name="Hit_Button">
     <property name="geometry">
      <rect>
       <x>580</x>
@@ -47,6 +47,9 @@
     </property>
    </widget>
    <widget class="QLabel" name="Table">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
     <property name="geometry">
      <rect>
       <x>-10</x>
@@ -66,6 +69,9 @@
     </property>
    </widget>
    <widget class="QLabel" name="label_1">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="geometry">
      <rect>
       <x>300</x>
@@ -85,6 +91,9 @@
     </property>
    </widget>
    <widget class="QLabel" name="label_3">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="geometry">
      <rect>
       <x>300</x>
@@ -233,8 +242,44 @@
      <bool>false</bool>
     </property>
    </widget>
+   <widget class="QPushButton" name="Stay_Button">
+    <property name="geometry">
+     <rect>
+      <x>100</x>
+      <y>50</y>
+      <width>80</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Stay</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="Split_Button">
+    <property name="geometry">
+     <rect>
+      <x>40</x>
+      <y>180</y>
+      <width>80</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Split</string>
+    </property>
+   </widget>
+   <widget class="QTextBrowser" name="textBrowser">
+    <property name="geometry">
+     <rect>
+      <x>530</x>
+      <y>290</y>
+      <width>201</width>
+      <height>171</height>
+     </rect>
+    </property>
+   </widget>
    <zorder>Table</zorder>
-   <zorder>pushButton</zorder>
+   <zorder>Hit_Button</zorder>
    <zorder>label_1</zorder>
    <zorder>label_2</zorder>
    <zorder>label_3</zorder>
@@ -245,6 +290,9 @@
    <zorder>label_8</zorder>
    <zorder>label_9</zorder>
    <zorder>label_10</zorder>
+   <zorder>Stay_Button</zorder>
+   <zorder>Split_Button</zorder>
+   <zorder>textBrowser</zorder>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
@@ -252,7 +300,7 @@
      <x>0</x>
      <y>0</y>
      <width>727</width>
-     <height>27</height>
+     <height>19</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuBlackJack">
