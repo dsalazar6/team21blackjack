@@ -48,7 +48,7 @@ public:
         this->name = valueNames[temp_value] + suitNames[suit];
         this->minValueUsed = false;
     }
-    ~Card() {}
+
     string getName() {
         return this->name;
     }
@@ -80,6 +80,8 @@ public:
     {
         minValueUsed = true;
     }
+
+    ~Card() {}
 private:
     string name;
     int value;
