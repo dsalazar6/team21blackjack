@@ -16,6 +16,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    //ui->New_Game->hide();
 
     for (int i = 0; i < 52; ++i) {
         Images.push_back(new QLabel(this));
@@ -24,23 +25,30 @@ MainWindow::MainWindow(QWidget *parent) :
     Title_Message = "BlackJack Game: Version 1.0";
     this->setWindowTitle(Title_Message);
 
-    //Asks for the number of players playing
-    int value = 1;
-    do {
-        value = QInputDialog::getInt(this, "Player Counter", "Please enter the number of players currently playing(Maximum 5)");
-       } while(value < 1 || value > 5);
+    Deck.addStandardDeck(1);
+    Deck.Shuffle();
 
+    //Asks for the number of players playing
+    Number_of_Players = 1;
+    /*
+    do {
+        Number_of_Players = QInputDialog::getInt(this, "Player Counter", "Please enter the number of players currently playing(Maximum 5)");
+       } while(Number_of_Players < 1 || Number_of_Players > 5);
+
+    */
+    Start_Game();
+
+    /*
     current_player_number = 0;
     current_hand_number = 0;
     Dealers_Turn = false;
 
     //players.reserve(10);
-    players.resize(value);
+    players.resize(Number_of_Players);
     Dealer.resize(1);
     Dealer[0].Set_Player_Identity(true);
 
-    Deck.addStandardDeck(1);
-    Deck.Shuffle();
+
 
 
     for (int i = 0; i < 2; ++i) {
@@ -50,6 +58,54 @@ MainWindow::MainWindow(QWidget *parent) :
                 players[j].Hide_Hand();
         }
         Deck.draw(Dealer[0], 0);
+        if (i == 1)
+            Dealer[0].Flip_Card(0);
+
+    }
+
+    for (int k = 0; k <= (int)players.size(); ++k) {
+       if (k == (int)players.size()) {
+           cout << "The Dealers Cards are the Following:" << endl;
+           Dealer[0].Display_Hands();
+       }
+       else {
+           cout << "Player #" << k + 1 << " Cards are the Following:" << endl;
+           players[k].Display_Hands();
+       }
+
+    }
+
+    Players_Turn = "It is currently player #";
+    Players_Turn += QString::number(current_player_number+1);
+    Players_Turn += "'s Turn\n";
+    ui->textBrowser->setText(Players_Turn);
+
+    */
+}
+void MainWindow::Start_Game() {
+    ui->New_Game->hide();
+    current_player_number = 0;
+    current_hand_number = 0;
+    Dealers_Turn = false;
+
+    //players.reserve(10);
+    players.resize(Number_of_Players);
+    Dealer.resize(1);
+    Dealer[0].Set_Player_Identity(true);
+
+
+
+
+    for (int i = 0; i < 2; ++i) {
+        for (int j = 0; j < (int)players.size(); ++j) {
+            Deck.draw(players[j], 0); //Draws the first player and is their first hand
+            if (j != 0)
+                players[j].Hide_Hand();
+        }
+        Deck.draw(Dealer[0], 0);
+        if (i == 1)
+            Dealer[0].Flip_Card(0);
+
     }
 
     for (int k = 0; k <= (int)players.size(); ++k) {
@@ -71,10 +127,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 }
 
-MainWindow::~MainWindow()
-{
-    delete ui;
-}
+
 
 // This needs to check the hand size and needs to allow them to hit based on how many hands they have
 void MainWindow::on_Hit_Button_clicked()
@@ -104,6 +157,13 @@ void MainWindow::on_Hit_Button_clicked()
 
 }
 
+void MainWindow::New_Game() {
+   Deck.Discard_Current_Cards();
+   players.clear();
+   Dealer.clear();
+   Start_Game();
+}
+
 void MainWindow::on_Stay_Button_clicked()
 {
     cout << "Players size is " << players.size() << endl;
@@ -117,8 +177,18 @@ void MainWindow::on_Stay_Button_clicked()
 
     else if (int(players.size()) == (current_player_number + 1) && (players[current_player_number].Get_Hand_Count()-1 == current_hand_number)) {
         Dealers_Turn = true;
+        Dealer[0].Flip_Card(0);
         Players_Turn = "It is currently the Dealers's turn\n";
         current_hand_number = 0;
+
+        while(Dealer[0].Get_Current_Hand_value(0) < 17) {
+            on_Hit_Button_clicked();
+        Players_Turn += "The Dealer has a Total of ";
+        Players_Turn += QString::number(Dealer[0].Get_Current_Hand_value(0));
+        if (Dealer[0].Get_Current_Hand_value(0) > 21)
+            Players_Turn += "\nThe Dealer has Busted!";
+        }
+        ui->New_Game->show();
     }
     else {
         if (current_hand_number == (int)players[current_player_number].Get_Hand_Count()-1) {
@@ -149,4 +219,17 @@ void MainWindow::on_Split_Button_clicked()
     //if (int(players.size()) == (current_player_number + 1))
     //        current_player_number = 0;
 
+}
+
+void MainWindow::on_New_Game_clicked()
+{
+    New_Game();
+}
+
+MainWindow::~MainWindow()
+{
+    for (int i = 0; i < Images.size(); ++i) {
+        delete Images.takeAt(0);
+    }
+    delete ui;
 }
