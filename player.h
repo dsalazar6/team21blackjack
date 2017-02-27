@@ -26,7 +26,7 @@ public:
     Player() {
         hands.reserve(5);
         hands.resize(1);
-        current_hand_count = 0;
+        //current_hand_count = 0;
         Is_player_dealer = false;
     }
 
@@ -34,10 +34,11 @@ public:
     void Split() {
         int temp = 0;
         Card card;
-        Hand nw_Hnd;
+        //Hand nw_Hnd;
         //nw_Hnd.add_card(card, temp);
         hands[0].Split_Cards(card, temp);
-        hands.push_back(nw_Hnd);
+        hands.resize(hands.size()+1);
+        //hands.push_back(Hand());
         hands[hands.size()-1].add_card(card, temp);
     }
 
@@ -62,12 +63,15 @@ public:
                 x1 = 300;
                 x2 = 360;
                 if (Is_dealer()) {
-                    y1 = 30;
-                    y2 = 120;
+                    y1 = 63;
+                    y2 = 153;
+
+                    //30, 120
                 }
                 else {
-                    y1 = 300;
-                    y2 = 390;
+                    y1 = 333;
+                    y2 = 423;
+                    //300, 390
                 }
         }
 
@@ -79,31 +83,7 @@ public:
             y1 = y1 - (30 * hands[hand_number].Get_Card_Count());
             y2 = y2 - (30 * hands[hand_number].Get_Card_Count());
         }
-        /*
-        if (!Is_dealer()) {
-            if (hands.size() == 1) {//x1 = 300, x2 = 360
-                x1 = 300 + (30 * hands[hand_number].Get_Card_Count());
-                x2 = 360 + (30 * hands[hand_number].Get_Card_Count());
-                y1 = 300;
-                y2 = 390;
-            }
-            else {
-                //The cards are split and are at different coordinates
-                x1 = 300 + (30 * hand_number);
-                x2 = 360 + (30 * hand_number);
-                y1 = 300 - (30 * hands[hand_number].Get_Card_Count());
-                y2 = 390 - (30 * hands[hand_number].Get_Card_Count());
-            }
-        }
-        else {
-            // Player is dealer and has different coordinates
-            x1 = 300 + (30 * hands[hand_number].Get_Card_Count());
-            x2 = 360 + (30 * hands[hand_number].Get_Card_Count());
-            y1 = 30;
-            y2 = 120;
 
-        }
-        */
         card_coordinates.setCoords(x1, y1, x2, y2);
          hands[hand_number].Add_Card(current_card, card_coordinates);
 
@@ -125,6 +105,10 @@ public:
             return true;
         else
             return false;
+    }
+
+    void Flip_Card(int hand_number) {
+        hands[hand_number].flip_card();
     }
 
 
@@ -166,9 +150,14 @@ public:
     void Bust(int hand_number) {return;}
 
     //This would clear the player at the end of every game.
-    bool Clear_Player() {return false;}
+    bool Clear_Player() {
 
-    ~Player() {}
+    }
+
+    ~Player() {
+        hands.clear();
+        Is_player_dealer = false;
+    }
 
 private:
     vector<Hand> hands;  // Stores the information about a players hand(s)
@@ -177,7 +166,7 @@ private:
 
     // Should add Is_Doubled_down() function for either cards or hand class. To be determined later...
 
-    int current_hand_count;  // Might not be necessary to have anymore.
+    //int current_hand_count;  // Might not be necessary to have anymore.
 
 
 
