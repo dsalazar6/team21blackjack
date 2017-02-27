@@ -29,6 +29,16 @@ public:
         return (rand() % max);
     }
 
+    void Discard_Current_Cards() {
+        for (int i = Drawn_Cards.size()-1; i >= 0; --i) {
+            if (Drawn_Cards[i].getMinValueUsed())
+                Drawn_Cards[i].resetValue();
+
+            Graveyard.push_back(Drawn_Cards[i]);
+            Drawn_Cards.pop_back();
+        }
+    }
+
     // An Algorithm that shuffles the deck(s)
     void Shuffle()
     {
@@ -59,13 +69,16 @@ public:
             cout << "The deck has run out of cards and will be reshuffled with the discarded cards.\n";
             Deck = Graveyard;
             Shuffle();
-            while (!Graveyard.empty())
-                Graveyard.erase(Graveyard.begin());
+            Graveyard.clear();
+            //while (!Graveyard.empty())
+           //     Graveyard.erase(Graveyard.begin());
         }
 
         cout << "Checking for busting " << current_player.Is_Busted(hand_number) << endl;
         if (!current_player.Is_Busted(hand_number)) {
             current_player.Hit_card(hand_number, Deck[0]); //Adds the top card of the vector to the hand
+            Drawn_Cards.push_back(Deck[0]);
+            //Graveyard.push_back(Deck[0]);
             Deck.erase(Deck.begin()); //Removes the top card of the vector
             cout << "The value of the current hand is "
                  << current_player.Get_Current_Hand_value(hand_number) << endl;
@@ -75,11 +88,15 @@ public:
         }
 
     }
-    ~deck() {}
+    ~deck() {
+        Deck.clear();
+        Graveyard.clear();
+    }
 
 private:
     vector<Card> Deck;
     vector<Card> Graveyard;
+    vector<Card> Drawn_Cards;
 
 };
 
