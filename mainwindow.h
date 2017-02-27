@@ -22,11 +22,13 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
 
+    void Start_Game();
+
     //Could use two ints for Deck ammounts and player ammount
     void Create_Deck() {return;}
 
     // Starts the game over. Removes info about players, clears hands, and deletes all cards
-    void New_Game() {return;}
+    void New_Game();
 
     // Could allow the new game types to be accessed and returns a bool if done sucessfully or not
     bool Change_Game_Type(string game_type) {return false;}
@@ -58,6 +60,9 @@ private slots:
     // Whenever the user clicks on Split, it will call this function
     void on_Split_Button_clicked();
 
+    // Whenever the user wants to start a new game
+    void on_New_Game_clicked();
+
 private:
     Ui::MainWindow *ui;
 
@@ -70,6 +75,7 @@ private:
     bool Dealers_Turn;
     int current_player_number;
     int current_hand_number;
+    int Number_of_Players;
 
     QString Title_Message;
     QString Players_Turn;
