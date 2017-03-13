@@ -22,13 +22,14 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
 
-    void Start_Game();
-
     //Could use two ints for Deck ammounts and player ammount
     void Create_Deck() {return;}
 
     // Starts the game over. Removes info about players, clears hands, and deletes all cards
     void New_Game();
+
+    // This is called the first time when the game starts and whenever New_Game() is called
+    void Start_Game();
 
     // Could allow the new game types to be accessed and returns a bool if done sucessfully or not
     bool Change_Game_Type(string game_type) {return false;}
@@ -43,7 +44,7 @@ public:
     bool Cash_out(string username) {return false;}
 
     // Allows the player to change to a different username
-    bool Change_user(string username) {return false;}
+    bool Change_user(string username);
 
 
 

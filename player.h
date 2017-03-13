@@ -149,11 +149,6 @@ public:
     //Manages the hand that just busted. (might remove the cards from the visual aspect)
     void Bust(int hand_number) {return;}
 
-    //This would clear the player at the end of every game.
-    bool Clear_Player() {
-
-    }
-
     ~Player() {
         hands.clear();
         Is_player_dealer = false;

@@ -93,6 +93,18 @@ public:
         return total;
     }
 
+    void flip_card() {
+        if (Doubled_down) {
+            Images[image_indexes[cards.size()-1]]->setPixmap(cards[cards.size()-1].getFileName());
+            Doubled_down = false;
+        }
+        else {
+            Images[image_indexes[cards.size()-1]]->setPixmap(QString("BackSide.png"));
+            Doubled_down = true;
+        }
+
+    }
+
     //Returns how many cards are in the current hand
     int Get_Card_Count() {
         return cards.size();
@@ -143,7 +155,14 @@ public:
     }
 
 
-    ~Hand() {}
+    ~Hand() {
+        for (int i = 0; i < (int)image_indexes.size(); ++i) {
+            Images[image_indexes[i]]->hide();
+        }
+        image_indexes.clear();
+        free_index = 0;
+        cards.clear();
+    }
 
 private:
     vector<Card> cards;

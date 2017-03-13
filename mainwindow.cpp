@@ -18,6 +18,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     //ui->New_Game->hide();
 
+    //Change_user("BOB");
+
     for (int i = 0; i < 52; ++i) {
         Images.push_back(new QLabel(this));
     }
@@ -30,6 +32,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     //Asks for the number of players playing
     Number_of_Players = 1;
+
+    //Asks for the number of players. DO NOT DELETE!!
     /*
     do {
         Number_of_Players = QInputDialog::getInt(this, "Player Counter", "Please enter the number of players currently playing(Maximum 5)");
@@ -38,49 +42,6 @@ MainWindow::MainWindow(QWidget *parent) :
     */
     Start_Game();
 
-    /*
-    current_player_number = 0;
-    current_hand_number = 0;
-    Dealers_Turn = false;
-
-    //players.reserve(10);
-    players.resize(Number_of_Players);
-    Dealer.resize(1);
-    Dealer[0].Set_Player_Identity(true);
-
-
-
-
-    for (int i = 0; i < 2; ++i) {
-        for (int j = 0; j < (int)players.size(); ++j) {
-            Deck.draw(players[j], 0); //Draws the first player and is their first hand
-            if (j != 0)
-                players[j].Hide_Hand();
-        }
-        Deck.draw(Dealer[0], 0);
-        if (i == 1)
-            Dealer[0].Flip_Card(0);
-
-    }
-
-    for (int k = 0; k <= (int)players.size(); ++k) {
-       if (k == (int)players.size()) {
-           cout << "The Dealers Cards are the Following:" << endl;
-           Dealer[0].Display_Hands();
-       }
-       else {
-           cout << "Player #" << k + 1 << " Cards are the Following:" << endl;
-           players[k].Display_Hands();
-       }
-
-    }
-
-    Players_Turn = "It is currently player #";
-    Players_Turn += QString::number(current_player_number+1);
-    Players_Turn += "'s Turn\n";
-    ui->textBrowser->setText(Players_Turn);
-
-    */
 }
 void MainWindow::Start_Game() {
     ui->New_Game->hide();
@@ -92,8 +53,6 @@ void MainWindow::Start_Game() {
     players.resize(Number_of_Players);
     Dealer.resize(1);
     Dealer[0].Set_Player_Identity(true);
-
-
 
 
     for (int i = 0; i < 2; ++i) {
@@ -224,6 +183,9 @@ void MainWindow::on_Split_Button_clicked()
 void MainWindow::on_New_Game_clicked()
 {
     New_Game();
+}
+
+bool MainWindow::Change_user(string username) {
 }
 
 MainWindow::~MainWindow()
