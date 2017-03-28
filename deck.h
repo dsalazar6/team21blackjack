@@ -3,6 +3,7 @@
 #include "card.h"
 #include "player.h"
 #include <iostream>
+#include <math.h>
 
 using namespace std;
 
@@ -70,15 +71,12 @@ public:
             Deck = Graveyard;
             Shuffle();
             Graveyard.clear();
-            //while (!Graveyard.empty())
-           //     Graveyard.erase(Graveyard.begin());
         }
 
         cout << "Checking for busting " << current_player.Is_Busted(hand_number) << endl;
         if (!current_player.Is_Busted(hand_number)) {
             current_player.Hit_card(hand_number, Deck[0]); //Adds the top card of the vector to the hand
             Drawn_Cards.push_back(Deck[0]);
-            //Graveyard.push_back(Deck[0]);
             Deck.erase(Deck.begin()); //Removes the top card of the vector
             cout << "The value of the current hand is "
                  << current_player.Get_Current_Hand_value(hand_number) << endl;
@@ -88,6 +86,47 @@ public:
         }
 
     }
+    double High_Card_Count() {
+      int counter = 0;
+      double percentage = 0;
+      for(int i = 0; i < (int)Graveyard.size(); ++i) {
+          if (Graveyard[i].getValue() == 10) {
+              counter++;
+          }
+      }
+      for (int i = 0; i < (int)Drawn_Cards.size(); ++i) {
+          if (i != 3) {
+              if (Drawn_Cards[i].getValue() == 10) {
+                  counter++;
+              }
+          }
+      }
+      percentage = ((52- counter)/52.00)* 100;
+      return (floor(percentage*100)/100);
+    }
+
+    double Low_Card_Count() {
+        int counter = 0;
+        double percentage = 0;
+        for(int i = 0; i < (int)Graveyard.size(); ++i) {
+            if (Graveyard[i].getValue() != 10) {
+                counter++;
+            }
+        }
+        for (int i = 0; i < (int)Drawn_Cards.size(); ++i) {
+            if (i != 3) {
+                if (Drawn_Cards[i].getValue() != 10) {
+                    counter++;
+                }
+            }
+        }
+        percentage = ((52- counter)/52.00)* 100;
+        return (floor(percentage*100)/100);
+    }
+
+
+
+
     ~deck() {
         Deck.clear();
         Graveyard.clear();
