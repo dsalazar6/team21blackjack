@@ -4,19 +4,10 @@
 
 #include "card.h"
 #include "hand.h"
+#include "bets.h"
 #include <vector>
 #include <QRect>
 #include <iostream>
-
-/*
-#include <QApplication>
-#include <QLabel>
-#include "mainwindow.h"
-#include <QMainWindow>
-#include <QWidgetList>
-#include <QWindowList>
-#include "ui_mainwindow.h"
-*/
 
 using namespace std;
 
@@ -26,21 +17,60 @@ public:
     Player() {
         hands.reserve(5);
         hands.resize(1);
-        //current_hand_count = 0;
+        chip_coordinates.resize(2);
         Is_player_dealer = false;
+    }
+    //Checks to see if we can split the cards. If they are the same, then they can be splitted.
+    bool Is_Splitable() {
+        return hands[0].Same_Cards();
     }
 
     // Splits the cards into two seperate hands
     void Split() {
         int temp = 0;
         Card card;
-        //Hand nw_Hnd;
-        //nw_Hnd.add_card(card, temp);
         hands[0].Split_Cards(card, temp);
         hands.resize(hands.size()+1);
-        //hands.push_back(Hand());
         hands[hands.size()-1].add_card(card, temp);
+
+
+        int x = 322, y = 405, w = 51, h = 51;
+        x = x + (32 * (hands.size()-1));
+        players_bets.Add_Bet(QRect(x,y,w,h));
+
     }
+
+    void Double_Down() {
+        int x = 322, y = 405, w = 51, h = 51;
+        x = x + (32 * (hands.size()-1));
+        players_bets.Add_Bet(QRect(x,y,w,h));
+    }
+
+    // Get all the coordinates for the players poker chips
+    vector<Poker_chips> Get_Poker_coordinates() {
+        return players_bets.Get_Bets();
+    }
+
+    void Add_Bet(double val){
+        int x = 322, y = 405, w = 51, h = 51;
+        x = x + (32 * (hands.size()-1));
+        QRect temp;
+        temp.setRect(x,y,w,h);
+        players_bets.Add_Bet(temp, val);
+    }
+
+    void Change_Bet(int bet_num, double value) {
+        players_bets.Set_Bets(bet_num,value);
+    }
+
+    void Set_Total_ChipsAmount(double val) {
+        players_bets.Set_TotalChips(val);
+    }
+
+    double Get_Total_ChipsAmount() {
+        return players_bets.get_TotalChips();
+    }
+
 
     // Shows the name of all the cards (for debugging purposes)
     void Display_Hands() {
@@ -56,7 +86,6 @@ public:
         int x1 , x2, y1, y2;
 
         if (hands[hand_number].Get_Card_Count() != 0) {
-        //Temporarly blocked. Look at function call for more details
             hands[hand_number].get_Card_Coordinates(x1, y1, x2, y2);
         }
         else {
@@ -88,8 +117,20 @@ public:
          hands[hand_number].Add_Card(current_card, card_coordinates);
 
     }
-    //Adds a card that shows the backside of the card until the end of the game
-    bool Double_Down() {return false;}
+    //Checks to see if the hand is able to double down
+    bool Is_Double_Downable(int hand) {
+        int Card_size = Get_Current_Hand_value(hand);
+        int Ace_count = hands[hand].Ace_Count();
+        int Non_ace_value = hands[hand].Non_Ace_value();
+        cout << "Ace count is " << Ace_count << endl;
+        cout << "Non ace value is " << Non_ace_value << endl;
+
+        if ((Card_size >= 9 && Card_size <= 11) ||
+            (Non_ace_value + Ace_count >= 9 && Non_ace_value + Ace_count <= 11)) {
+            return true;
+        }
+        return false;
+    }
 
     //Ends the turn for the current hand.
     void Hold() {}
@@ -146,6 +187,7 @@ public:
     bool Is_dealer() {
         return Is_player_dealer;
     }
+
     //Manages the hand that just busted. (might remove the cards from the visual aspect)
     void Bust(int hand_number) {return;}
 
@@ -158,6 +200,8 @@ private:
     vector<Hand> hands;  // Stores the information about a players hand(s)
     QRect card_coordinates; //Only seems to be used in the "Hit Cards" function. May be removed from this area later
     bool Is_player_dealer;
+    vector<Poker_chips> chip_coordinates; //Stores information about players chips
+    Bets players_bets;
 
     // Should add Is_Doubled_down() function for either cards or hand class. To be determined later...
 
