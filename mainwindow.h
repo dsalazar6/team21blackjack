@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QLabel>
 #include <QString>
+#include <QTextBrowser>
 #include <vector>
 #include "card.h"
 #include "player.h"
@@ -64,6 +65,11 @@ private slots:
     // Whenever the user wants to start a new game
     void on_New_Game_clicked();
 
+    //Whenever the user clicks on Double_Down, it will call this function
+    void on_Double_Down_clicked();
+
+    void on_Surrender_clicked();
+
 private:
     Ui::MainWindow *ui;
 
@@ -73,11 +79,17 @@ private:
     // Stores information about the dealer. MUST REMAIN A VECTOR
     vector<Player> Dealer;
 
+    vector<QTextBrowser*> Chip_Values;
+    vector<QLabel*> Poker_Chips;
+    vector<Poker_chips> Chips_coordinates;
+
+    bool players_out;
     bool Dealers_Turn;
     int current_player_number;
     int current_hand_number;
     int Number_of_Players;
 
+    QString Chip_name;
     QString Title_Message;
     QString Players_Turn;
     QString Dialog_Text;
