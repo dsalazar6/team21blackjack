@@ -98,12 +98,51 @@
      <string>New Game</string>
     </property>
    </widget>
+   <widget class="QPushButton" name="Double_Down">
+    <property name="geometry">
+     <rect>
+      <x>40</x>
+      <y>210</y>
+      <width>91</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Double Down</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="Surrender">
+    <property name="geometry">
+     <rect>
+      <x>100</x>
+      <y>90</y>
+      <width>80</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Surrender</string>
+    </property>
+   </widget>
+   <widget class="QTextBrowser" name="textBrowser_2">
+    <property name="geometry">
+     <rect>
+      <x>560</x>
+      <y>90</y>
+      <width>141</width>
+      <height>111</height>
+     </rect>
+    </property>
+   </widget>
    <zorder>Table</zorder>
    <zorder>Hit_Button</zorder>
    <zorder>Stay_Button</zorder>
    <zorder>Split_Button</zorder>
    <zorder>textBrowser</zorder>
    <zorder>New_Game</zorder>
+   <zorder>Double_Down</zorder>
+   <zorder>Surrender</zorder>
+   <zorder>textBrowser_2</zorder>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
