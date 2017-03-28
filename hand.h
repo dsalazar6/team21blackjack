@@ -22,10 +22,7 @@ public:
         card_size = 0;
         Doubled_down = false;
         busted = false;
-        //cards.reserve(10);
-        //images.reserve(10);
         cards.resize(0);
-        //images.resize(1);
     }
 
     //Adds a card to the hand
@@ -39,8 +36,6 @@ public:
         Images[free_index]->show();
         image_indexes.push_back(free_index);
         ++free_index;
-
-        //images.push_back(temp);
     }
 
     // This is used for when the user splits cards
@@ -57,6 +52,17 @@ public:
         for (int i = 0; i < (int)cards.size(); ++i) {
             cout << cards[i].getName() << endl;
         }
+    }
+
+    // Checks to see if the cards are the same or not (For splitting purposes)
+    bool Same_Cards() {
+        string card_one = cards[0].getName();
+        string card_two = cards[1].getName();
+        for (int i = 0; i < 2; ++i) {
+            if (card_one[i] != card_two[i])
+                return false;
+        }
+        return true;
     }
 
     // Makes the cards visible for the GUI screen
@@ -91,6 +97,25 @@ public:
                 total -= 10;
         }
         return total;
+    }
+
+    //Checks to see how many aces there are in the hand
+    int Ace_Count() {
+        int total_aces = 0;
+        for (int i = 0; i < (int)cards.size(); ++i) {
+            if(cards[i].getValue() == 1 || cards[i].getValue() == 11)
+                total_aces++;
+        }
+        return total_aces;
+    }
+
+    int Non_Ace_value() {
+        int Non_ace_value = 0;
+        for (int i = 0; i < (int)cards.size(); ++i) {
+            if(cards[i].getValue() != 1 && cards[i].getValue() != 11)
+                Non_ace_value += cards[i].getValue();
+        }
+        return Non_ace_value;
     }
 
     void flip_card() {
