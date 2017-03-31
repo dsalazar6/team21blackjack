@@ -6,7 +6,14 @@ using std::string;
 
 class Card
 {
+private:
+    string name;
+    int value;
+    int minValue;
+    bool minValueUsed;
+
 public:
+    int cardId[2];
     Card() {
         name = "NULL";
         value = minValue = 0;
@@ -24,8 +31,10 @@ public:
     {
         index = index % 52;
         int suit = index / 13;
+		cardId[0] = suit;
         string suitNames[4] = { "Hearts", "Spades", "Diamonds", "Clubs" };
         int temp_value = index % 13;
+        cardId[1] = temp_value;
         string valueNames[13] = { "Ace of ", "Two of ", "Three of ", "Four of ", "Five of ", "Six of ", "Seven of ", "Eight of ", "Nine of ", "Ten of ", "Jack of ", "Queen of ", "King of " };
         if (temp_value == 0)
         {
@@ -82,11 +91,6 @@ public:
     }
 
     ~Card() {}
-private:
-    string name;
-    int value;
-    int minValue;
-    bool minValueUsed;
 };
 
 
@@ -94,3 +98,5 @@ private:
 
 
 #endif // CARD_H
+
+

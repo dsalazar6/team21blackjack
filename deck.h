@@ -3,25 +3,46 @@
 #include "card.h"
 #include "player.h"
 #include <iostream>
-#include <math.h>
 
 using namespace std;
-
+//A prototype implementation of the card counting.
+//It is not yet complete and may be changed many times before the 2nd iteration is released.
 class deck {
+private:
+    vector<Card> Deck;
+    vector<Card> Graveyard;
+    vector<Card> Drawn_Cards;
+    int cards_remaining[13];
+	int num_decks;
+
 public:
     deck() {}
 
     // Creates all the cards needed for the deck(s)
     void addStandardDeck(int decks_used)
     {
-        Card temp;
+        Card Temp;
+		num_decks = decks_used;
         int total_cards = 52 * decks_used;
         for (int i = 0; i < total_cards; i++)
         {
-            temp = Card(i);
-            Deck.push_back(temp);
+            Temp = Card(i);
+            Deck.push_back(Temp);
         }
-
+		int temp = 4 * decks_used;
+        cards_remaining[0] = temp;
+        cards_remaining[1] = temp;
+        cards_remaining[2] = temp;
+        cards_remaining[3] = temp;
+        cards_remaining[4] = temp;
+        cards_remaining[5] = temp;
+        cards_remaining[6] = temp;
+        cards_remaining[7] = temp;
+        cards_remaining[8] = temp;
+        cards_remaining[9] = temp;
+        cards_remaining[10] = temp;
+        cards_remaining[11] = temp;
+        cards_remaining[12] = temp;
     }
 
     // returns random number
@@ -30,7 +51,8 @@ public:
         return (rand() % max);
     }
 
-    void Discard_Current_Cards() {
+    void Discard_Current_Cards()
+	{
         for (int i = Drawn_Cards.size()-1; i >= 0; --i) {
             if (Drawn_Cards[i].getMinValueUsed())
                 Drawn_Cards[i].resetValue();
@@ -45,13 +67,14 @@ public:
     {
         int j = 0;
         int rnd;
-
+		Card tmp;
+		Card b;
         for (int i = 0; i < (int)Deck.size(); i++)
         {
             rnd = getRandomNumber(Deck.size());
             j = rnd;
-            Card tmp = Deck[i];
-            Card b = Deck[j];
+            tmp = Deck[i];
+            b = Deck[j];
             Deck[i] = Deck[j];
             Deck[j] = tmp;
         }
@@ -71,12 +94,30 @@ public:
             Deck = Graveyard;
             Shuffle();
             Graveyard.clear();
+			int temp = 4 * num_decks;
+            cards_remaining[0] = temp; //Ace
+            cards_remaining[1] = temp; //Two
+            cards_remaining[2] = temp; //Three
+            cards_remaining[3] = temp; //Four
+            cards_remaining[4] = temp; //Five
+            cards_remaining[5] = temp; //Six
+            cards_remaining[6] = temp; //Seven
+            cards_remaining[7] = temp; //Eight
+            cards_remaining[8] = temp; //Nine
+            cards_remaining[9] = temp; //Ten
+            cards_remaining[10] = temp; //Jack
+            cards_remaining[11] = temp; //Queen
+            cards_remaining[12] = temp; //King
+            //while (!Graveyard.empty())
+           //     Graveyard.erase(Graveyard.begin());
         }
 
         cout << "Checking for busting " << current_player.Is_Busted(hand_number) << endl;
         if (!current_player.Is_Busted(hand_number)) {
             current_player.Hit_card(hand_number, Deck[0]); //Adds the top card of the vector to the hand
             Drawn_Cards.push_back(Deck[0]);
+            cards_remaining[Deck[0].cardId[1]] = cards_remaining[Deck[0].cardId[1]] - 1;
+            //Graveyard.push_back(Deck[0]);
             Deck.erase(Deck.begin()); //Removes the top card of the vector
             cout << "The value of the current hand is "
                  << current_player.Get_Current_Hand_value(hand_number) << endl;
@@ -86,58 +127,24 @@ public:
         }
 
     }
-    double High_Card_Count() {
-      int counter = 0;
-      double percentage = 0;
-      for(int i = 0; i < (int)Graveyard.size(); ++i) {
-          if (Graveyard[i].getValue() == 10) {
-              counter++;
-          }
-      }
-      for (int i = 0; i < (int)Drawn_Cards.size(); ++i) {
-          if (i != 3) {
-              if (Drawn_Cards[i].getValue() == 10) {
-                  counter++;
-              }
-          }
-      }
-      percentage = ((52- counter)/52.00)* 100;
-      return (floor(percentage*100)/100);
+
+    int getCardCount(int index)
+    {
+        return cards_remaining[index];
     }
 
-    double Low_Card_Count() {
-        int counter = 0;
-        double percentage = 0;
-        for(int i = 0; i < (int)Graveyard.size(); ++i) {
-            if (Graveyard[i].getValue() != 10) {
-                counter++;
-            }
-        }
-        for (int i = 0; i < (int)Drawn_Cards.size(); ++i) {
-            if (i != 3) {
-                if (Drawn_Cards[i].getValue() != 10) {
-                    counter++;
-                }
-            }
-        }
-        percentage = ((52- counter)/52.00)* 100;
-        return (floor(percentage*100)/100);
-    }
-
-
-
-
-    ~deck() {
+    ~deck()
+	{
         Deck.clear();
         Graveyard.clear();
     }
 
-private:
-    vector<Card> Deck;
-    vector<Card> Graveyard;
-    vector<Card> Drawn_Cards;
+
 
 };
 
 
 #endif // DECK_H
+
+
+
