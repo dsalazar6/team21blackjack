@@ -128,7 +128,11 @@ void MainWindow::Start_Game()
 
     for (int i = 0; i < Number_of_Players; ++i)
     {
-        players[i].Set_Total_ChipsAmount(500.00);
+        if(get_Turn()==1) //Patrick's modification
+            players[i].Set_Total_ChipsAmount(500.00);
+
+        incrementTurn(); //Patrick's modification
+
         double bet_amount;
         do {
             bet_amount = QInputDialog::getInt(this, "Bet_Value", "Please enter the bet ammount you want to put in(Minimum $5.00)",5);
