@@ -134,6 +134,19 @@
      </rect>
     </property>
    </widget>
+   <widget class="QPushButton" name="pushButton">
+    <property name="geometry">
+     <rect>
+      <x>470</x>
+      <y>140</y>
+      <width>80</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Card Count</string>
+    </property>
+   </widget>
    <zorder>Table</zorder>
    <zorder>Hit_Button</zorder>
    <zorder>Stay_Button</zorder>
@@ -143,6 +156,7 @@
    <zorder>Double_Down</zorder>
    <zorder>Surrender</zorder>
    <zorder>textBrowser_2</zorder>
+   <zorder>pushButton</zorder>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
@@ -150,7 +164,7 @@
      <x>0</x>
      <y>0</y>
      <width>727</width>
-     <height>21</height>
+     <height>19</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuBlackJack">
@@ -193,9 +207,9 @@
     <string>Normal Game Rules</string>
    </property>
   </action>
-  <action name="actionMirrage_Casino_Rules">
+  <action name="actionMirage_Casino_Rules">
    <property name="text">
-    <string>Mirrage Casino Rules</string>
+    <string>Mirage Casino Rules</string>
    </property>
   </action>
  </widget>
