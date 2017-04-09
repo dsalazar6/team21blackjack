@@ -10,11 +10,13 @@ private:
     string name;
     int value;
     int minValue;
+    int cardId[2];
     bool minValueUsed;
+    bool faceDown;
 
 public:
-    int cardId[2];
-    Card() {
+    Card()
+    {
         name = "NULL";
         value = minValue = 0;
         minValueUsed = false;
@@ -31,7 +33,7 @@ public:
     {
         index = index % 52;
         int suit = index / 13;
-		cardId[0] = suit;
+        cardId[0] = suit;
         string suitNames[4] = { "Hearts", "Spades", "Diamonds", "Clubs" };
         int temp_value = index % 13;
         cardId[1] = temp_value;
@@ -54,14 +56,17 @@ public:
                 this->value = 10;
             }
         }
+        faceDown = false;
         this->name = valueNames[temp_value] + suitNames[suit];
         this->minValueUsed = false;
     }
 
-    string getName() {
+    string getName()
+    {
         return this->name;
     }
-    QString getFileName() {
+    QString getFileName()
+    {
         QString CardFile = QString::fromStdString(name + ".png");
         return CardFile;
     }
@@ -70,7 +75,9 @@ public:
     {
         return this->minValue;
     }
-    int getValue() {
+
+    int getValue()
+    {
         if (minValueUsed)
         {
             return this->minValue;
@@ -88,6 +95,21 @@ public:
     void useMinValue()
     {
         minValueUsed = true;
+    }
+
+    void setFaceDown(bool input)
+    {
+        faceDown = input;
+    }
+
+    bool isFaceDown()
+    {
+        return faceDown;
+    }
+
+    int getId()
+    {
+        return cardId[1];
     }
 
     ~Card() {}
