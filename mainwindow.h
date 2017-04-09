@@ -38,6 +38,7 @@ private:
     int current_player_number;
     int current_hand_number;
     int Number_of_Players;
+    int turns=1; //Patrick's modification
 
     QString Chip_name;
     QString Title_Message;
@@ -68,6 +69,17 @@ private slots:
 
 public:
     explicit MainWindow(QWidget *parent = 0);
+
+
+    //Patricks Modification for Turn increments
+    const int get_Turn()
+    {
+        return turns;
+    }
+    void incrementTurn()
+    {
+        turns++;
+    }
 
     //Could use two ints for Deck ammounts and player ammount
     void Create_Deck() { return; }
