@@ -452,7 +452,8 @@ void MainWindow::on_Surrender_clicked()
 		cout << "YOU LOST HALF OF YOUR MONEY!!!!!!!!" << endl;
 		Chip_Values[0]->setText(QString("Total_Chips: $") + QString::number(Chips_coordinates[0].total_amount + (Chips_coordinates[1].total_amount / 2)));
 		ui->textBrowser->setText("You Lost the game with half your money back");
-        on_Stay_Button_clicked();
+        //New_Game(); This is what's causing the error guys
+        on_Stay_Button_clicked(); //here's the fix.
 	}
     else
     {
