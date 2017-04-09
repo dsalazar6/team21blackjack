@@ -39,6 +39,7 @@ private:
     int current_hand_number;
     int Number_of_Players;
     int turns=1; //Patrick's modification
+    bool surrender=false;
 
     QString Chip_name;
     QString Title_Message;
@@ -48,6 +49,8 @@ private:
     deck Deck;
 
 private slots:
+
+
     // Whenever the user clicks on Hit, it will call this function
     void on_Hit_Button_clicked();
 
@@ -71,7 +74,14 @@ public:
     explicit MainWindow(QWidget *parent = 0);
    double gainslosses=0;
 
-    //Patricks Modification for Turn increments
+    //Patricks Modification for Turn increments and surrendering for bets
+   //Is the user surrendering?
+   const bool getSurrender(){
+   return surrender;}
+       ;
+   void setUserSurrender(bool truefalse){
+       surrender=truefalse;
+   };
     const int get_Turn()
     {
         return turns;
