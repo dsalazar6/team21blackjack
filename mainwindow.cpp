@@ -128,10 +128,8 @@ void MainWindow::Start_Game()
 
     for (int i = 0; i < Number_of_Players; ++i)
     {
-        if(get_Turn()==1) //Patrick's modification
-            players[i].Set_Total_ChipsAmount(500.00);
+            players[i].Set_Total_ChipsAmount(500.00+gainslosses);
 
-        incrementTurn(); //Patrick's modification
 
         double bet_amount;
         do {
@@ -291,6 +289,7 @@ void MainWindow::on_Stay_Button_clicked()
 
         if (players_out)
         {
+
             ui->textBrowser->setText(QString("The Dealer Won!\n"));
             ui->New_Game->show();
             return;
@@ -329,6 +328,8 @@ void MainWindow::on_Stay_Button_clicked()
                 {
                     //we need to update the bet money at this point
                     ui->textBrowser->setText(ui->textBrowser->toPlainText() + QString("Player 1 hand ") + QString::number(i + 1) + QString(": won \n"));
+                    gainslosses+=(Chips_coordinates[1].total_amount);
+
                 }
             }
 
@@ -343,13 +344,16 @@ void MainWindow::on_Stay_Button_clicked()
                 if (Dealer_total < players[current_player_number].Get_Current_Hand_value(i) && players[current_player_number].Get_Current_Hand_value(i) < 22)
                 {
                     ui->textBrowser->setText(ui->textBrowser->toPlainText() + QString("Player 1 hand ") + QString::number(i + 1) + QString(": won \n"));
+                    gainslosses+=(Chips_coordinates[1].total_amount);
                 }
                 else
                     Dealer_Beat_someone = true;
             }
-            if (Dealer_Beat_someone)
-                ui->textBrowser->setText(ui->textBrowser->toPlainText() + QString("Dealer won"));
+            if (Dealer_Beat_someone){
+                gainslosses-=(Chips_coordinates[1].total_amount);
 
+                ui->textBrowser->setText(ui->textBrowser->toPlainText() + QString("Dealer won"));
+}
         }
         ui->New_Game->show();
     }
@@ -457,6 +461,7 @@ void MainWindow::on_Surrender_clicked()
     {
         cout << "YOU LOST HALF OF YOUR MONEY!!!!!!!!" << endl;
         Chip_Values[0]->setText(QString("Total_Chips: $") + QString::number(Chips_coordinates[0].total_amount + (Chips_coordinates[1].total_amount / 2)));
+        gainslosses-=(Chips_coordinates[1].total_amount/2);
         ui->textBrowser->setText("You Lost the game with half your money back");
         //New_Game();
         on_Stay_Button_clicked();
