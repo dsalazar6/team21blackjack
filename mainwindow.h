@@ -69,7 +69,7 @@ private slots:
 
 public:
     explicit MainWindow(QWidget *parent = 0);
-
+   double gainslosses=0;
 
     //Patricks Modification for Turn increments
     const int get_Turn()
