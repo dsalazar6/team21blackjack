@@ -324,7 +324,7 @@ void MainWindow::on_Stay_Button_clicked()
             ui->textBrowser->setText(QString(Players_Turn));
             for (int i = 0; i < players[current_player_number].Get_Hand_Count();++i)
             {
-                if (!(players[current_player_number].Is_Busted(i)))
+                if (!(players[current_player_number].Is_Busted(i)) && !getSurrender())
                 {
                     //we need to update the bet money at this point
                     ui->textBrowser->setText(ui->textBrowser->toPlainText() + QString("Player 1 hand ") + QString::number(i + 1) + QString(": won \n"));
@@ -341,7 +341,7 @@ void MainWindow::on_Stay_Button_clicked()
             ui->textBrowser->setText(QString(""));
             for (int i = 0; i < players[current_player_number].Get_Hand_Count(); ++i)
             {
-                if (Dealer_total < players[current_player_number].Get_Current_Hand_value(i) && players[current_player_number].Get_Current_Hand_value(i) < 22)
+                if (Dealer_total < players[current_player_number].Get_Current_Hand_value(i) && players[current_player_number].Get_Current_Hand_value(i) < 22 && !getSurrender())
                 {
                     ui->textBrowser->setText(ui->textBrowser->toPlainText() + QString("Player 1 hand ") + QString::number(i + 1) + QString(": won \n"));
                     gainslosses+=(Chips_coordinates[1].total_amount);
@@ -349,12 +349,13 @@ void MainWindow::on_Stay_Button_clicked()
                 else
                     Dealer_Beat_someone = true;
             }
-            if (Dealer_Beat_someone){
+            if (Dealer_Beat_someone && !getSurrender()){
                 gainslosses-=(Chips_coordinates[1].total_amount);
 
                 ui->textBrowser->setText(ui->textBrowser->toPlainText() + QString("Dealer won"));
 }
         }
+        setUserSurrender(false);
         ui->New_Game->show();
     }
     else
@@ -454,6 +455,8 @@ void MainWindow::on_Double_Down_clicked()
         ui->textBrowser->setText(QString("You do not have enough money for Double Down"));
     }
 }
+const bool getSurrender();
+void setUserSurrender(bool);
 
 void MainWindow::on_Surrender_clicked()
 {
@@ -464,7 +467,8 @@ void MainWindow::on_Surrender_clicked()
         gainslosses-=(Chips_coordinates[1].total_amount/2);
         ui->textBrowser->setText("You Lost the game with half your money back");
         //New_Game();
-        on_Stay_Button_clicked();
+        setUserSurrender(true);
+on_Stay_Button_clicked();
     }
     else
     {
