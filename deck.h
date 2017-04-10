@@ -6,15 +6,19 @@
 
 using namespace std;
 //Card counting implemented to keep track of exact values and the low/high count
-class deck {
+class deck
+{
 private:
     vector<Card> Deck;
     vector<Card> Graveyard;
     vector<Card> Drawn_Cards;
     int cards_remaining[13];
+	int cards_used[13];
     int num_decks;
-    int lowCount; //card is an Ace or 2-7
-    int highCount; //card is 8 or above
+    int lowCountR; //card is an Ace or 2-7
+	int lowCountU; //card is an Ace or 2-7
+    int highCountR; //card is 8 or above
+	int highCountU; //card is 8 or above
 
 public:
     deck() {}
@@ -30,21 +34,15 @@ public:
             Temp = Card(i);
             Deck.push_back(Temp);
         }
-        cards_remaining[0] = 0;
-        cards_remaining[1] = 0;
-        cards_remaining[2] = 0;
-        cards_remaining[3] = 0;
-        cards_remaining[4] = 0;
-        cards_remaining[5] = 0;
-        cards_remaining[6] = 0;
-        lowCount = 0;
-        cards_remaining[7] = 0;
-        cards_remaining[8] = 0;
-        cards_remaining[9] = 0;
-        cards_remaining[10] = 0;
-        cards_remaining[11] = 0;
-        cards_remaining[12] = 0;
-        highCount = 0;
+		for (int i = 0; i < 13; i++)
+		{
+			cards_remaining[i] = 0;
+			cards_used[i] = 0;
+		}
+        lowCountR = 0;
+        highCountR = 0;
+		lowCountU = 0;
+		highCountU = 0;
     }
 
     // returns random number
@@ -166,13 +164,16 @@ public:
     void changeCardCount(int index, int change)
     {
         cards_remaining[index] += change;
+		cards_used[index] -= change;
         if (index <= 6)
         {
-            lowCount += change;
+            lowCountR += change;
+			lowCountU -= change;
         }
         else
         {
-            highCount += change;
+            highCountR += change;
+			highCountU -= change;
         }
     }
 
@@ -183,8 +184,4 @@ public:
     }
 };
 
-
 #endif // DECK_H
-
-
-
