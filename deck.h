@@ -19,6 +19,7 @@ private:
 	int lowCountU; //card is an Ace or 2-7
     int highCountR; //card is 8 or above
 	int highCountU; //card is 8 or above
+	bool remainingUsed; //if true cards_remaining is used
 
 public:
     deck() {}
@@ -26,6 +27,7 @@ public:
     // Creates all the cards needed for the deck(s)
     void addStandardDeck(int decks_used)
     {
+		remaining_used = true;
         Card Temp;
         num_decks = decks_used;
         int total_cards = 52 * decks_used;
@@ -101,22 +103,6 @@ public:
             Deck = Graveyard;
             Shuffle();
             Graveyard.clear();
-            /*int temp = 4 * num_decks;
-            cards_remaining[0] = temp; //Ace
-            cards_remaining[1] = temp; //Two
-            cards_remaining[2] = temp; //Three
-            cards_remaining[3] = temp; //Four
-            cards_remaining[4] = temp; //Five
-            cards_remaining[5] = temp; //Six
-            cards_remaining[6] = temp; //Seven
-            lowCount = 7 * temp;
-            cards_remaining[7] = temp; //Eight
-            cards_remaining[8] = temp; //Nine
-            cards_remaining[9] = temp; //Ten
-            cards_remaining[10] = temp; //Jack
-            cards_remaining[11] = temp; //Queen
-            cards_remaining[12] = temp; //King
-            highCount = 6 * temp;*/
             //while (!Graveyard.empty())
             //Graveyard.erase(Graveyard.begin());
         }
@@ -148,12 +134,20 @@ public:
 
     int getLowCount()
     {
-        return lowCount;
+		if (remainingUsed)
+		{
+			return lowCountR;
+		}
+        return lowCountU;
     }
 
     int getHighCount()
     {
-        return highCount;
+		if (remainingUsed)
+		{
+			return highCountR;
+		}
+		return highCountU;
     }
 
     int getCardCount(int index)
