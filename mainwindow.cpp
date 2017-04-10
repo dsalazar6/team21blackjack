@@ -133,7 +133,7 @@ void MainWindow::Start_Game()
 
         double bet_amount;
         do {
-            bet_amount = QInputDialog::getInt(this, "Bet_Value", "Please enter the bet ammount you want to put in(Minimum $5.00)",5);
+            bet_amount = QInputDialog::getInt(this, "Bet_Value", "Please enter the bet amount you want to put in(Minimum $5.00)",5);
         } while (bet_amount < 5.00 || bet_amount > players[i].Get_Total_ChipsAmount());
 
         players[i].Add_Bet(bet_amount);
@@ -162,19 +162,12 @@ void MainWindow::Start_Game()
     temp.setHeight(20);
     Chip_Values[1]->setGeometry(temp);
 
-
-
-
-
     if (players[current_player_number].Is_Splitable())
         ui->Split_Button->show();
 
     if (players[current_player_number].Is_Double_Downable(current_hand_number))
         ui->Double_Down->show();
-
 }
-
-
 
 // This needs to check the hand size and needs to allow them to hit based on how many hands they have
 void MainWindow::on_Hit_Button_clicked()
@@ -203,14 +196,14 @@ void MainWindow::on_Hit_Button_clicked()
         else
             ;//Dialog_Text = "Dealers current hand value is " + QString::number(Dealer[0].Get_Current_Hand_value(0)) + "\n";
     }
-
     else
     {
         if (players[current_player_number].Is_Busted(current_hand_number))
         {
             //Dialog_Text = "You Busted with a value of " + QString::number(players[current_player_number].Get_Current_Hand_value(current_hand_number)) + "\n";
-            ui->textBrowser->setText("You Busted with a value of " + QString::number(players[current_player_number].Get_Current_Hand_value(current_hand_number)) + "\n");
+            //ui->textBrowser->setText("You Busted with a value of " + QString::number(players[current_player_number].Get_Current_Hand_value(current_hand_number)) + "\n");
             on_Stay_Button_clicked();
+            gainslosses -= (Chips_coordinates[1].total_amount);
             return;
         }
         else
@@ -289,8 +282,8 @@ void MainWindow::on_Stay_Button_clicked()
 
         if (players_out)
         {
-
-            ui->textBrowser->setText(QString("The Dealer Won!\n"));
+            ui->textBrowser->setText("You Busted with a value of " + QString::number(players[current_player_number].Get_Current_Hand_value(current_hand_number)) + "\nThe Dealer Won!\n");
+            //
             ui->New_Game->show();
             return;
         }
@@ -506,15 +499,3 @@ MainWindow::~MainWindow()
     }
     delete ui;
 }
-
-
-
-
-
-
-
-
-
-
-
-
