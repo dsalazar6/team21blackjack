@@ -152,7 +152,11 @@ public:
 
     int getCardCount(int index)
     {
-        return cards_remaining[index];
+		if (remainingUsed)
+		{
+			return cards_remaining[index];
+		}
+		return cards_used[index];
     }
 
     void changeCardCount(int index, int change)
@@ -171,6 +175,11 @@ public:
         }
     }
 
+	void setRemainingUsed(bool value)
+	{
+		remainingUsed = value;
+	}
+	
     ~deck()
     {
         Deck.clear();
@@ -179,3 +188,4 @@ public:
 };
 
 #endif // DECK_H
+
