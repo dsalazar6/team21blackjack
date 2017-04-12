@@ -8,6 +8,8 @@
 
 QList<QLabel*> Images;
 int free_index = 0;
+bool showPrecise = false;
+bool showUsed = true;
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -15,9 +17,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     Chip_name = "Poker_Chip.png";
-
     //Change_user("BOB");
-
     for (int i = 0; i < 52; ++i) {
         Images.push_back(new QLabel(this));
     }
@@ -26,17 +26,12 @@ MainWindow::MainWindow(QWidget *parent) :
         Chip_Values.push_back(new QTextBrowser(this));
     }
     Chip_Values[2]->hide();
-
-
-    Title_Message = "BlackJack Game: Version 1.5";
+    Title_Message = "BlackJack Game: Version 1.8";
     this->setWindowTitle(Title_Message);
-
     Deck.addStandardDeck(1);
     Deck.Shuffle();
-
     //Asks for the number of players playing
     Number_of_Players = 1;
-
     //Asks for the number of players. DO NOT DELETE!!
     /*
     do {
@@ -45,7 +40,60 @@ MainWindow::MainWindow(QWidget *parent) :
 
     */
     Start_Game();
+}
 
+void MainWindow::Update_Card_Count()
+{
+	Deck.setRemainingUsed(!showUsed);
+	if (!showUsed)
+	{
+		if (showPrecise)
+		{
+			ui->textBrowser_2->setText(QString("Aces remaining: ") + QString::number(Deck.getCardCount(0)));
+			ui->textBrowser_2->setText(ui->textBrowser_2->toPlainText() + QString("\nTwos remaining: ") + QString::number(Deck.getCardCount(1)));
+			ui->textBrowser_2->setText(ui->textBrowser_2->toPlainText() + QString("\nThrees remaining: ") + QString::number(Deck.getCardCount(2)));
+			ui->textBrowser_2->setText(ui->textBrowser_2->toPlainText() + QString("\nFours remaining: ") + QString::number(Deck.getCardCount(3)));
+			ui->textBrowser_2->setText(ui->textBrowser_2->toPlainText() + QString("\nFives remaining: ") + QString::number(Deck.getCardCount(4)));
+			ui->textBrowser_2->setText(ui->textBrowser_2->toPlainText() + QString("\nSixes remaining: ") + QString::number(Deck.getCardCount(5)));
+			ui->textBrowser_2->setText(ui->textBrowser_2->toPlainText() + QString("\nSevens remaining: ") + QString::number(Deck.getCardCount(6)));
+			ui->textBrowser_2->setText(ui->textBrowser_2->toPlainText() + QString("\nEights remaining: ") + QString::number(Deck.getCardCount(7)));
+			ui->textBrowser_2->setText(ui->textBrowser_2->toPlainText() + QString("\nNines remaining: ") + QString::number(Deck.getCardCount(8)));
+			ui->textBrowser_2->setText(ui->textBrowser_2->toPlainText() + QString("\nTens remaining: ") + QString::number(Deck.getCardCount(9)));
+			ui->textBrowser_2->setText(ui->textBrowser_2->toPlainText() + QString("\nJacks remaining: ") + QString::number(Deck.getCardCount(10)));
+			ui->textBrowser_2->setText(ui->textBrowser_2->toPlainText() + QString("\nQueens remaining: ") + QString::number(Deck.getCardCount(11)));
+			ui->textBrowser_2->setText(ui->textBrowser_2->toPlainText() + QString("\nKings remaining: ") + QString::number(Deck.getCardCount(12)));
+		}
+		else
+		{
+			ui->textBrowser_2->setText(QString("Low Cards (A-7) remaining: ") + QString::number(Deck.getLowCount()));
+			ui->textBrowser_2->setText(ui->textBrowser_2->toPlainText() + QString("\nHigh Cards(8 - K) remaining: ") + QString::number(Deck.getHighCount()));
+		}
+	}
+	else
+	{
+		if (showPrecise)
+		{
+			ui->textBrowser_2->setText(QString("Aces used: ") + QString::number(Deck.getCardCount(0)));
+			ui->textBrowser_2->setText(ui->textBrowser_2->toPlainText() + QString("\nTwos used: ") + QString::number(Deck.getCardCount(1)));
+			ui->textBrowser_2->setText(ui->textBrowser_2->toPlainText() + QString("\nThrees used: ") + QString::number(Deck.getCardCount(2)));
+			ui->textBrowser_2->setText(ui->textBrowser_2->toPlainText() + QString("\nFours used: ") + QString::number(Deck.getCardCount(3)));
+			ui->textBrowser_2->setText(ui->textBrowser_2->toPlainText() + QString("\nFives used: ") + QString::number(Deck.getCardCount(4)));
+			ui->textBrowser_2->setText(ui->textBrowser_2->toPlainText() + QString("\nSixes used: ") + QString::number(Deck.getCardCount(5)));
+			ui->textBrowser_2->setText(ui->textBrowser_2->toPlainText() + QString("\nSevens used: ") + QString::number(Deck.getCardCount(6)));
+			ui->textBrowser_2->setText(ui->textBrowser_2->toPlainText() + QString("\nEights used: ") + QString::number(Deck.getCardCount(7)));
+			ui->textBrowser_2->setText(ui->textBrowser_2->toPlainText() + QString("\nNines used: ") + QString::number(Deck.getCardCount(8)));
+			ui->textBrowser_2->setText(ui->textBrowser_2->toPlainText() + QString("\nTens used: ") + QString::number(Deck.getCardCount(9)));
+			ui->textBrowser_2->setText(ui->textBrowser_2->toPlainText() + QString("\nJacks used: ") + QString::number(Deck.getCardCount(10)));
+			ui->textBrowser_2->setText(ui->textBrowser_2->toPlainText() + QString("\nQueens used: ") + QString::number(Deck.getCardCount(11)));
+			ui->textBrowser_2->setText(ui->textBrowser_2->toPlainText() + QString("\nKings used: ") + QString::number(Deck.getCardCount(12)));
+		}
+		else
+		{
+			ui->textBrowser_2->setText(QString("Low Cards (A-7) used: ") + QString::number(Deck.getLowCount()));
+			ui->textBrowser_2->setText(ui->textBrowser_2->toPlainText() + QString("\nHigh Cards(8 - K) used: ") + QString::number(Deck.getHighCount()));
+		}
+	}
+	
 }
 
 void MainWindow::Start_Game()
@@ -54,26 +102,21 @@ void MainWindow::Start_Game()
     ui->Split_Button->hide();
     ui->Double_Down->hide();
     ui->Surrender->show();
-
     for (int i = 0; i < 5; ++i)
     {
         Poker_Chips.push_back(new QLabel(this));
         Poker_Chips[i]->setPixmap(Chip_name);
         Poker_Chips[i]->hide();
     }
-
     current_player_number = 0;
     current_hand_number = 0;
     Dealers_Turn = false;
-
     players.resize(Number_of_Players);
     Dealer.resize(1);
     Chips_coordinates = players[0].Get_Poker_coordinates();
     //Poker_Chips.resize(1);
     //Chips_coordinates.resize(1);
     Dealer[0].Set_Player_Identity(true);
-
-
     for (int i = 0; i < 2; ++i)
     {
         for (int j = 0; j < (int)players.size(); ++j)
@@ -85,26 +128,10 @@ void MainWindow::Start_Game()
         Deck.draw(Dealer[0], 0, i == 1);
         if (i == 1)
             Dealer[0].Flip_Card(0);
-
     }
 
     //uncomment these lines for the 3rd iteration
-    /*ui->textBrowser_2->setText(QString("Aces remaining: ") + QString::number(Deck.getCardCount(0)));
-    ui->textBrowser_2->setText(ui->textBrowser_2->toPlainText() + QString("\nTwos remaining: ") + QString::number(Deck.getCardCount(1)));
-    ui->textBrowser_2->setText(ui->textBrowser_2->toPlainText() + QString("\nThrees remaining: ") + QString::number(Deck.getCardCount(2)));
-    ui->textBrowser_2->setText(ui->textBrowser_2->toPlainText() + QString("\nFours remaining: ") + QString::number(Deck.getCardCount(3)));
-    ui->textBrowser_2->setText(ui->textBrowser_2->toPlainText() + QString("\nFives remaining: ") + QString::number(Deck.getCardCount(4)));
-    ui->textBrowser_2->setText(ui->textBrowser_2->toPlainText() + QString("\nSixes remaining: ") + QString::number(Deck.getCardCount(5)));
-    ui->textBrowser_2->setText(ui->textBrowser_2->toPlainText() + QString("\nSevens remaining: ") + QString::number(Deck.getCardCount(6)));
-    ui->textBrowser_2->setText(ui->textBrowser_2->toPlainText() + QString("\nEights remaining: ") + QString::number(Deck.getCardCount(7)));
-    ui->textBrowser_2->setText(ui->textBrowser_2->toPlainText() + QString("\nNines remaining: ") + QString::number(Deck.getCardCount(8)));
-    ui->textBrowser_2->setText(ui->textBrowser_2->toPlainText() + QString("\nTens remaining: ") + QString::number(Deck.getCardCount(9)));
-    ui->textBrowser_2->setText(ui->textBrowser_2->toPlainText() + QString("\nJacks remaining: ") + QString::number(Deck.getCardCount(10)));
-    ui->textBrowser_2->setText(ui->textBrowser_2->toPlainText() + QString("\nQueens remaining: ") + QString::number(Deck.getCardCount(11)));
-    ui->textBrowser_2->setText(ui->textBrowser_2->toPlainText() + QString("\nKings remaining: ") + QString::number(Deck.getCardCount(12)));*/
-
-    ui->textBrowser_2->setText(QString("Low Cards (A-7) Remaining: ") + QString::number(Deck.getLowCount()));
-    ui->textBrowser_2->setText(ui->textBrowser_2->toPlainText() + QString("\nHigh Cards(8 - K) Remaining: ") + QString::number(Deck.getHighCount()));
+	Update_Card_Count();
 
 
     for (int k = 0; k <= (int)players.size(); ++k)
@@ -117,7 +144,6 @@ void MainWindow::Start_Game()
             cout << "Player #" << k + 1 << " Cards are the Following:" << endl;
             players[k].Display_Hands();
         }
-
     }
 
     Players_Turn = "It is currently player #";
@@ -125,20 +151,19 @@ void MainWindow::Start_Game()
     Players_Turn += "'s Turn\n";
     ui->textBrowser->setText(Players_Turn);
 
-
     for (int i = 0; i < Number_of_Players; ++i)
     {
             players[i].Set_Total_ChipsAmount(500.00+gainslosses);
 
 
         double bet_amount;
-        do {
+        do
+		{
             bet_amount = QInputDialog::getInt(this, "Bet_Value", "Please enter the bet amount you want to put in(Minimum $5.00)",5);
-        } while (bet_amount < 5.00 || bet_amount > players[i].Get_Total_ChipsAmount());
+        }
+		while (bet_amount < 5.00 || bet_amount > players[i].Get_Total_ChipsAmount());
 
         players[i].Add_Bet(bet_amount);
-
-
     }
 
     Chips_coordinates = players[current_player_number].Get_Poker_coordinates();
@@ -219,22 +244,7 @@ void MainWindow::on_Hit_Button_clicked()
         Dialog_Text = Players_Turn + Dialog_Text;
         ui->textBrowser->setText(Dialog_Text);
     }
-    //uncomment these lines for the 3rd iteration
-    /*ui->textBrowser_2->setText(QString("Aces remaining: ") + QString::number(Deck.getCardCount(0)));
-    ui->textBrowser_2->setText(ui->textBrowser_2->toPlainText() + QString("\nTwos remaining: ") + QString::number(Deck.getCardCount(1)));
-    ui->textBrowser_2->setText(ui->textBrowser_2->toPlainText() + QString("\nThrees remaining: ") + QString::number(Deck.getCardCount(2)));
-    ui->textBrowser_2->setText(ui->textBrowser_2->toPlainText() + QString("\nFours remaining: ") + QString::number(Deck.getCardCount(3)));
-    ui->textBrowser_2->setText(ui->textBrowser_2->toPlainText() + QString("\nFives remaining: ") + QString::number(Deck.getCardCount(4)));
-    ui->textBrowser_2->setText(ui->textBrowser_2->toPlainText() + QString("\nSixes remaining: ") + QString::number(Deck.getCardCount(5)));
-    ui->textBrowser_2->setText(ui->textBrowser_2->toPlainText() + QString("\nSevens remaining: ") + QString::number(Deck.getCardCount(6)));
-    ui->textBrowser_2->setText(ui->textBrowser_2->toPlainText() + QString("\nEights remaining: ") + QString::number(Deck.getCardCount(7)));
-    ui->textBrowser_2->setText(ui->textBrowser_2->toPlainText() + QString("\nNines remaining: ") + QString::number(Deck.getCardCount(8)));
-    ui->textBrowser_2->setText(ui->textBrowser_2->toPlainText() + QString("\nTens remaining: ") + QString::number(Deck.getCardCount(9)));
-    ui->textBrowser_2->setText(ui->textBrowser_2->toPlainText() + QString("\nJacks remaining: ") + QString::number(Deck.getCardCount(10)));
-    ui->textBrowser_2->setText(ui->textBrowser_2->toPlainText() + QString("\nQueens remaining: ") + QString::number(Deck.getCardCount(11)));
-    ui->textBrowser_2->setText(ui->textBrowser_2->toPlainText() + QString("\nKings remaining: ") + QString::number(Deck.getCardCount(12)));*/
-    ui->textBrowser_2->setText(QString("Low Cards (A-7) Remaining: ") + QString::number(Deck.getLowCount()));
-    ui->textBrowser_2->setText(ui->textBrowser_2->toPlainText() + QString("\nHigh Cards(8 - K) Remaining: ") + QString::number(Deck.getHighCount()));
+    Update_Card_Count();
 }
 
 void MainWindow::New_Game()
@@ -287,22 +297,7 @@ void MainWindow::on_Stay_Button_clicked()
             ui->New_Game->show();
             return;
         }
-        //uncomment these lines for the 3rd iteration
-        /*ui->textBrowser_2->setText(QString("Aces remaining: ") + QString::number(Deck.getCardCount(0)));
-        ui->textBrowser_2->setText(ui->textBrowser_2->toPlainText() + QString("\nTwos remaining: ") + QString::number(Deck.getCardCount(1)));
-        ui->textBrowser_2->setText(ui->textBrowser_2->toPlainText() + QString("\nThrees remaining: ") + QString::number(Deck.getCardCount(2)));
-        ui->textBrowser_2->setText(ui->textBrowser_2->toPlainText() + QString("\nFours remaining: ") + QString::number(Deck.getCardCount(3)));
-        ui->textBrowser_2->setText(ui->textBrowser_2->toPlainText() + QString("\nFives remaining: ") + QString::number(Deck.getCardCount(4)));
-        ui->textBrowser_2->setText(ui->textBrowser_2->toPlainText() + QString("\nSixes remaining: ") + QString::number(Deck.getCardCount(5)));
-        ui->textBrowser_2->setText(ui->textBrowser_2->toPlainText() + QString("\nSevens remaining: ") + QString::number(Deck.getCardCount(6)));
-        ui->textBrowser_2->setText(ui->textBrowser_2->toPlainText() + QString("\nEights remaining: ") + QString::number(Deck.getCardCount(7)));
-        ui->textBrowser_2->setText(ui->textBrowser_2->toPlainText() + QString("\nNines remaining: ") + QString::number(Deck.getCardCount(8)));
-        ui->textBrowser_2->setText(ui->textBrowser_2->toPlainText() + QString("\nTens remaining: ") + QString::number(Deck.getCardCount(9)));
-        ui->textBrowser_2->setText(ui->textBrowser_2->toPlainText() + QString("\nJacks remaining: ") + QString::number(Deck.getCardCount(10)));
-        ui->textBrowser_2->setText(ui->textBrowser_2->toPlainText() + QString("\nQueens remaining: ") + QString::number(Deck.getCardCount(11)));
-        ui->textBrowser_2->setText(ui->textBrowser_2->toPlainText() + QString("\nKings remaining: ") + QString::number(Deck.getCardCount(12)));*/
-        ui->textBrowser_2->setText(QString("Low Cards (A-7) Remaining: ") + QString::number(Deck.getLowCount()));
-        ui->textBrowser_2->setText(ui->textBrowser_2->toPlainText() + QString("\nHigh Cards(8 - K) Remaining: ") + QString::number(Deck.getHighCount()));
+		Update_Card_Count();
 
         while (Dealer[0].Get_Current_Hand_value(0) < 17)
         {
@@ -342,11 +337,11 @@ void MainWindow::on_Stay_Button_clicked()
                 else
                     Dealer_Beat_someone = true;
             }
-            if (Dealer_Beat_someone && !getSurrender()){
+            if (Dealer_Beat_someone && !getSurrender())
+			{
                 gainslosses-=(Chips_coordinates[1].total_amount);
-
                 ui->textBrowser->setText(ui->textBrowser->toPlainText() + QString("Dealer won"));
-}
+			}	
         }
         setUserSurrender(false);
         ui->New_Game->show();
@@ -358,7 +353,6 @@ void MainWindow::on_Stay_Button_clicked()
             current_hand_number = 0;
             players[current_player_number].Hide_Hand();
             ++current_player_number;
-
             players[current_player_number].Show_Hand();
             Players_Turn = "It is currently player #";
             Players_Turn += QString::number(current_player_number + 1);
@@ -372,7 +366,6 @@ void MainWindow::on_Stay_Button_clicked()
             Players_Turn += "'s Turn\nHand number " + QString::number(current_hand_number + 1);
         }//ui->textBrowser->setText(Players_Turn);
     }
-
     ui->Split_Button->hide();
     ui->Double_Down->hide();
 }
@@ -383,24 +376,20 @@ void MainWindow::on_Split_Button_clicked()
     {
         players[current_player_number].Split();
         current_hand_number = 0;
-
+		Chips_coordinates[1].total_amount *= 2;
         ui->Split_Button->hide();
         ui->Surrender->hide();
-
-
         Chips_coordinates = players[current_player_number].Get_Poker_coordinates();
         QRect temp = Chips_coordinates[Chips_coordinates.size() - 1].chip_coordinates;
         temp.setTop(temp.top() + 50);
         temp.setWidth(70);
         temp.setHeight(20);
-
         Chip_Values[Chips_coordinates.size() - 1]->setGeometry(temp);
         Chip_Values[Chips_coordinates.size() - 1]->setText(QString("$ " + QString::number(Chips_coordinates[Chips_coordinates.size() - 1].total_amount)));
         Poker_Chips[Chips_coordinates.size() - 1]->setGeometry(Chips_coordinates[Chips_coordinates.size() - 1].chip_coordinates);
         Poker_Chips[Chips_coordinates.size() - 1]->show();
         Chip_Values[Chips_coordinates.size() - 1]->show();
         Chip_Values[0]->setText(QString("Total_Chips: $" + QString::number(players[current_player_number].Get_Total_ChipsAmount())));
-
     }
     else
     {
@@ -426,7 +415,6 @@ void MainWindow::on_Double_Down_clicked()
             temp.setX(temp.x() + 30);
             temp.setWidth(70);
             temp.setHeight(20);
-
             Chip_Values[Chips_coordinates.size() - 1]->setGeometry(temp);
             Chip_Values[Chips_coordinates.size() - 1]->setText(QString("$ " + QString::number(Chips_coordinates[Chips_coordinates.size() - 1].total_amount)));
             Poker_Chips[Chips_coordinates.size() - 1]->setGeometry(Chips_coordinates[Chips_coordinates.size() - 1].chip_coordinates);
@@ -461,7 +449,7 @@ void MainWindow::on_Surrender_clicked()
         ui->textBrowser->setText("You Lost the game with half your money back");
         //New_Game();
         setUserSurrender(true);
-on_Stay_Button_clicked();
+		on_Stay_Button_clicked();
     }
     else
     {
