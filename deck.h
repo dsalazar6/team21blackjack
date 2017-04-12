@@ -1,4 +1,4 @@
-ifndef DECK_H
+#ifndef DECK_H
 #define DECK_H
 #include "card.h"
 #include "player.h"
@@ -27,7 +27,7 @@ public:
     // Creates all the cards needed for the deck(s)
     void addStandardDeck(int decks_used)
     {
-		remaining_used = true;
+		remainingUsed = true;
         Card Temp;
         num_decks = decks_used;
         int total_cards = 52 * decks_used;
@@ -40,12 +40,12 @@ public:
 		for (int i = 0; i < 13; i++)
 		{
 			cards_remaining[i] = 0;
-			cards_used[i] = temp;
+			cards_used[i] = value;
 		}
         lowCountR = 0;
         highCountR = 0;
-		lowCountU = 7 * temp;
-		highCountU = 6 * temp;
+		lowCountU = 7 * value;
+		highCountU = 6 * value;
     }
 
     // returns random number
