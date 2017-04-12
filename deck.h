@@ -1,4 +1,4 @@
-#ifndef DECK_H
+ifndef DECK_H
 #define DECK_H
 #include "card.h"
 #include "player.h"
@@ -36,15 +36,16 @@ public:
             Temp = Card(i);
             Deck.push_back(Temp);
         }
+		int value = 4 * decks_used;
 		for (int i = 0; i < 13; i++)
 		{
 			cards_remaining[i] = 0;
-			cards_used[i] = 0;
+			cards_used[i] = temp;
 		}
         lowCountR = 0;
         highCountR = 0;
-		lowCountU = 0;
-		highCountU = 0;
+		lowCountU = 7 * temp;
+		highCountU = 6 * temp;
     }
 
     // returns random number
@@ -188,4 +189,3 @@ public:
 };
 
 #endif // DECK_H
-
