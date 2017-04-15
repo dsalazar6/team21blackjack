@@ -103,7 +103,7 @@ void MainWindow::Start_Game()
 {
     ui->New_Game->hide();
     ui->Split_Button->hide();
-    ui->Double_Down->hide();
+   // ui->Double_Down->hide();
     ui->Surrender->show();
     for (int i = 0; i < 5; ++i)
     {
@@ -191,7 +191,7 @@ void MainWindow::Start_Game()
     if (players[current_player_number].Is_Splitable())
         ui->Split_Button->show();
 
-    if (players[current_player_number].Is_Double_Downable(current_hand_number))
+   // if (players[current_player_number].Is_Double_Downable(current_hand_number))
         ui->Double_Down->show();
 }
 
@@ -294,7 +294,6 @@ void MainWindow::on_Stay_Button_clicked()
         if (players_out)
         {
             ui->textBrowser->setText("You Busted with a value of " + QString::number(players[current_player_number].Get_Current_Hand_value(current_hand_number)) + "\nThe Dealer Won!\n");
-            //
             ui->New_Game->show();
             return;
         }
@@ -318,10 +317,10 @@ void MainWindow::on_Stay_Button_clicked()
                     //we need to update the bet money at this point
                     ui->textBrowser->setText(ui->textBrowser->toPlainText() + QString("Player 1 hand ") + QString::number(i + 1) + QString(": won \n"));
                     gainslosses+=(Chips_coordinates[1].total_amount);
-
+                    if(doubledDown)
+                        gainslosses+=(Chips_coordinates[1].total_amount);
                 }
             }
-
         }
         else
         {
@@ -335,9 +334,7 @@ void MainWindow::on_Stay_Button_clicked()
                     ui->textBrowser->setText(ui->textBrowser->toPlainText() + QString("Player 1 hand ") + QString::number(i + 1) + QString(": won \n"));
                     gainslosses+=(Chips_coordinates[1].total_amount);
                     if (doubledDown)
-                    {
                         gainslosses+=(Chips_coordinates[1].total_amount);
-                    }
                 }
                 else
                     Dealer_Beat_someone = true;
@@ -345,10 +342,8 @@ void MainWindow::on_Stay_Button_clicked()
             if (Dealer_Beat_someone && !getSurrender())
             {
                 gainslosses-=(Chips_coordinates[1].total_amount);
-                if (doubledDown)
-                {
-                    gainslosses-=(Chips_coordinates[1].total_amount);
-                }
+                if(doubledDown)
+                    gainslosses -= (Chips_coordinates[1].total_amount);
                 ui->textBrowser->setText(ui->textBrowser->toPlainText() + QString("Dealer won"));
             }
         }
