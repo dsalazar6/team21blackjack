@@ -26,7 +26,7 @@ MainWindow::MainWindow(QWidget *parent) :
         Chip_Values.push_back(new QTextBrowser(this));
     }
     Chip_Values[2]->hide();
-    Title_Message = "BlackJack Game: Version 1.8";
+    Title_Message = "BlackJack Game: Version 1.9";
     this->setWindowTitle(Title_Message);
     Deck.addStandardDeck(1);
     Deck.Shuffle();
