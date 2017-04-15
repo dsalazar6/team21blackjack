@@ -103,7 +103,7 @@ void MainWindow::Start_Game()
 {
     ui->New_Game->hide();
     ui->Split_Button->hide();
-   // ui->Double_Down->hide();
+    ui->Double_Down->hide();
     ui->Surrender->show();
     for (int i = 0; i < 5; ++i)
     {
@@ -191,7 +191,7 @@ void MainWindow::Start_Game()
     if (players[current_player_number].Is_Splitable())
         ui->Split_Button->show();
 
-   // if (players[current_player_number].Is_Double_Downable(current_hand_number))
+    if (players[current_player_number].Is_Double_Downable(current_hand_number))
         ui->Double_Down->show();
 }
 
