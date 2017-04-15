@@ -50,6 +50,7 @@ private:
 
 private slots:
 
+    void on_Hit_Button_clicked();
 
     // Whenever the user clicks on Hit, it will call this function
     void on_Hit_Button_clicked();
