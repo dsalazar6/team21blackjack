@@ -114,11 +114,4 @@ public:
 
     ~Card() {}
 };
-
-
-
-
-
 #endif // CARD_H
-
-

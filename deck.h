@@ -13,13 +13,13 @@ private:
     vector<Card> Graveyard;
     vector<Card> Drawn_Cards;
     int cards_remaining[13];
-	int cards_used[13];
+    int cards_used[13];
     int num_decks;
     int lowCountR; //card is an Ace or 2-7
-	int lowCountU; //card is an Ace or 2-7
+    int lowCountU; //card is an Ace or 2-7
     int highCountR; //card is 8 or above
-	int highCountU; //card is 8 or above
-	bool remainingUsed; //if true cards_remaining is used
+    int highCountU; //card is 8 or above
+    bool remainingUsed; //if true cards_remaining is used
 
 public:
     deck() {}
@@ -27,7 +27,7 @@ public:
     // Creates all the cards needed for the deck(s)
     void addStandardDeck(int decks_used)
     {
-		remainingUsed = true;
+        remainingUsed = true;
         Card Temp;
         num_decks = decks_used;
         int total_cards = 52 * decks_used;
@@ -36,16 +36,16 @@ public:
             Temp = Card(i);
             Deck.push_back(Temp);
         }
-		int value = 4 * decks_used;
-		for (int i = 0; i < 13; i++)
-		{
-			cards_remaining[i] = 0;
-			cards_used[i] = value;
-		}
+        int value = 4 * decks_used;
+        for (int i = 0; i < 13; i++)
+        {
+            cards_remaining[i] = 0;
+            cards_used[i] = value;
+        }
         lowCountR = 0;
         highCountR = 0;
-		lowCountU = 7 * value;
-		highCountU = 6 * value;
+        lowCountU = 7 * value;
+        highCountU = 6 * value;
     }
 
     // returns random number
@@ -135,52 +135,52 @@ public:
 
     int getLowCount()
     {
-		if (remainingUsed)
-		{
-			return lowCountR;
-		}
+        if (remainingUsed)
+        {
+            return lowCountR;
+        }
         return lowCountU;
     }
 
     int getHighCount()
     {
-		if (remainingUsed)
-		{
-			return highCountR;
-		}
-		return highCountU;
+        if (remainingUsed)
+        {
+            return highCountR;
+        }
+        return highCountU;
     }
 
     int getCardCount(int index)
     {
-		if (remainingUsed)
-		{
-			return cards_remaining[index];
-		}
-		return cards_used[index];
+        if (remainingUsed)
+        {
+            return cards_remaining[index];
+        }
+        return cards_used[index];
     }
 
     void changeCardCount(int index, int change)
     {
         cards_remaining[index] += change;
-		cards_used[index] -= change;
+        cards_used[index] -= change;
         if (index <= 6)
         {
             lowCountR += change;
-			lowCountU -= change;
+            lowCountU -= change;
         }
         else
         {
             highCountR += change;
-			highCountU -= change;
+            highCountU -= change;
         }
     }
 
-	void setRemainingUsed(bool value)
-	{
-		remainingUsed = value;
-	}
-	
+    void setRemainingUsed(bool value)
+    {
+        remainingUsed = value;
+    }
+
     ~deck()
     {
         Deck.clear();

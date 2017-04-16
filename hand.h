@@ -173,7 +173,6 @@ public:
     bool Is_Busted() {return true;} //Returns if this hand is busted or not
     void Double_down_hand() {} //Makes the last cards image the backside of the card until the end of the game
 
-
     void get_Card_Coordinates(int& x1, int& y1, int& x2, int& y2)
     {
        /*Has the issue of on the first cards that it doesn't have any geometry
@@ -217,7 +216,6 @@ public:
         cards.pop_back();
     }
 
-
     ~Hand()
     {
         for (int i = 0; i < (int)image_indexes.size(); ++i) {
@@ -228,8 +226,5 @@ public:
         cards.clear();
     }
 
-
 };
-
-
 #endif // HAND_H

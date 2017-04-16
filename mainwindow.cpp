@@ -5,6 +5,7 @@
 #include <QString>
 #include <QTextBrowser>
 #include <QInputDialog>
+#include <QMessageBox>
 
 QList<QLabel*> Images;
 int free_index = 0;
@@ -154,17 +155,23 @@ void MainWindow::Start_Game()
 
     for (int i = 0; i < Number_of_Players; ++i)
     {
-            players[i].Set_Total_ChipsAmount(500.00+gainslosses);
-
-
-        double bet_amount;
-        do
-        {
-            bet_amount = QInputDialog::getInt(this, "Bet_Value", "Please enter the bet amount you want to put in(Minimum $5.00)",5);
+        players[i].Set_Total_ChipsAmount(500.00+gainslosses);
+        if (players[i].Get_Total_ChipsAmount() <= 0) {
+            QMessageBox::information(this, "GAME OVER", "You have run out of money to bet. The game will now close.");
+            QApplication::quit();
         }
-        while (bet_amount < 5.00 || bet_amount > players[i].Get_Total_ChipsAmount());
+        else {
+            Chip_Values[0]->setText(QString("Total_Chips: $" + QString::number(players[current_player_number].Get_Total_ChipsAmount())));
+
+            double bet_amount;
+            do
+            {
+                bet_amount = QInputDialog::getInt(this, "Bet_Value", "Please enter the bet amount you want to put in(Minimum $5.00)",5);
+            }
+            while (bet_amount < 5.00 || bet_amount > players[i].Get_Total_ChipsAmount());
 
         players[i].Add_Bet(bet_amount);
+        }
     }
 
     Chips_coordinates = players[current_player_number].Get_Poker_coordinates();
@@ -294,6 +301,7 @@ void MainWindow::on_Stay_Button_clicked()
         if (players_out)
         {
             ui->textBrowser->setText("You Busted with a value of " + QString::number(players[current_player_number].Get_Current_Hand_value(current_hand_number)) + "\nThe Dealer Won!\n");
+            //
             ui->New_Game->show();
             return;
         }
@@ -317,10 +325,13 @@ void MainWindow::on_Stay_Button_clicked()
                     //we need to update the bet money at this point
                     ui->textBrowser->setText(ui->textBrowser->toPlainText() + QString("Player 1 hand ") + QString::number(i + 1) + QString(": won \n"));
                     gainslosses+=(Chips_coordinates[1].total_amount);
-                    if(doubledDown)
-                        gainslosses+=(Chips_coordinates[1].total_amount);
                 }
             }
+            for (int i = 0; i < players[current_player_number].Get_Hand_Count();++i)
+            {
+                Chip_Values[0]->setText(QString("Total_Chips: $" + QString::number(players[current_player_number].Get_Total_ChipsAmount())));
+            }
+
         }
         else
         {
@@ -334,18 +345,36 @@ void MainWindow::on_Stay_Button_clicked()
                     ui->textBrowser->setText(ui->textBrowser->toPlainText() + QString("Player 1 hand ") + QString::number(i + 1) + QString(": won \n"));
                     gainslosses+=(Chips_coordinates[1].total_amount);
                     if (doubledDown)
+                    {
                         gainslosses+=(Chips_coordinates[1].total_amount);
+                    }
                 }
                 else
-                    Dealer_Beat_someone = true;
+                {
+                    //Dealer_Beat_someone = true;
+                    if (!getSurrender())
+                    {
+                         ui->textBrowser->setText(ui->textBrowser->toPlainText() + QString("Player 1 hand ") + QString::number(i + 1) + QString(": lost \n"));
+                        gainslosses-=(Chips_coordinates[1].total_amount);
+                        if (doubledDown)
+                        {
+                            gainslosses-=(Chips_coordinates[1].total_amount);
+                        }
+                        ui->textBrowser->setText(ui->textBrowser->toPlainText() + QString("Dealer won"));
+                    }
+                }
+
             }
-            if (Dealer_Beat_someone && !getSurrender())
+             Chip_Values[0]->setText(QString("Total_Chips: $" + QString::number(players[current_player_number].Get_Total_ChipsAmount())));
+            /*if (Dealer_Beat_someone && !getSurrender())
             {
                 gainslosses-=(Chips_coordinates[1].total_amount);
-                if(doubledDown)
-                    gainslosses -= (Chips_coordinates[1].total_amount);
+                if (doubledDown)
+                {
+                    gainslosses-=(Chips_coordinates[1].total_amount);
+                }
                 ui->textBrowser->setText(ui->textBrowser->toPlainText() + QString("Dealer won"));
-            }
+            }*/
         }
         setUserSurrender(false);
         ui->New_Game->show();
@@ -372,6 +401,7 @@ void MainWindow::on_Stay_Button_clicked()
     }
     ui->Split_Button->hide();
     ui->Double_Down->hide();
+
 }
 
 void MainWindow::on_Split_Button_clicked()
@@ -465,8 +495,14 @@ void MainWindow::on_Surrender_clicked()
 }
 void MainWindow::on_New_Game_clicked()
 {
-    doubledDown = false;
-    New_Game();
+    //else {
+        for (int i = 0; i < players[current_player_number].Get_Hand_Count();++i)
+        {
+            Chip_Values[0]->setText(QString("Total_Chips: $" + QString::number(players[current_player_number].Get_Total_ChipsAmount())));
+        }
+        doubledDown = false;
+        New_Game();
+    //}
 }
 
 bool MainWindow::Change_user(string username)
@@ -482,7 +518,6 @@ void MainWindow::on_pushButton_clicked()
         ui->textBrowser_2->hide();
     else
         ui->textBrowser_2->show();
-
 }
 
 MainWindow::~MainWindow()

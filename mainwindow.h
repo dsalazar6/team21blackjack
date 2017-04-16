@@ -50,7 +50,7 @@ private:
 
 private slots:
 
-    void on_Hit_Button_clicked();
+    void Update_Card_Count();
 
     // Whenever the user clicks on Hit, it will call this function
     void on_Hit_Button_clicked();
@@ -121,4 +121,3 @@ public:
 };
 
 #endif // MAINWINDOW_H
-

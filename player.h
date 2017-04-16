@@ -97,7 +97,6 @@ public:
         return players_bets.get_TotalChips();
     }
 
-
     // Shows the name of all the cards (for debugging purposes)
     void Display_Hands()
     {
@@ -245,4 +244,3 @@ public:
 };
 
 #endif // PLAYER_H
-
