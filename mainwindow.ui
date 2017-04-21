@@ -147,6 +147,45 @@
      <string>Card Count</string>
     </property>
    </widget>
+   <widget class="QLabel" name="labelBust">
+    <property name="geometry">
+     <rect>
+      <x>130</x>
+      <y>210</y>
+      <width>520</width>
+      <height>218</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>                                                              This is where it will show Bust</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="labelWin">
+    <property name="geometry">
+     <rect>
+      <x>150</x>
+      <y>190</y>
+      <width>520</width>
+      <height>218</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>                                                     This is where it will show Win</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="labelLoss">
+    <property name="geometry">
+     <rect>
+      <x>120</x>
+      <y>230</y>
+      <width>520</width>
+      <height>218</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>                                                     This is where it will show general loss</string>
+    </property>
+   </widget>
    <zorder>Table</zorder>
    <zorder>Hit_Button</zorder>
    <zorder>Stay_Button</zorder>
@@ -157,6 +196,9 @@
    <zorder>Surrender</zorder>
    <zorder>textBrowser_2</zorder>
    <zorder>pushButton</zorder>
+   <zorder>labelBust</zorder>
+   <zorder>labelWin</zorder>
+   <zorder>labelLoss</zorder>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
@@ -164,7 +206,7 @@
      <x>0</x>
      <y>0</y>
      <width>727</width>
-     <height>19</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuBlackJack">
@@ -217,4 +259,3 @@
  <resources/>
  <connections/>
 </ui>
-
