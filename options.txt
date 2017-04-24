@@ -1,0 +1,12 @@
+winColor 0 255 0
+loseColor 255 0 0
+casinoRules default
+*doubleDownMin 9
+*doubleDownMax 11
+*dealerStop 17
+*surrenderAvaliable 1
+showCount 1
+showRemaining 1
+showPrecise 1
+defaultBet 5
+startMoney 500
