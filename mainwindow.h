@@ -71,6 +71,12 @@ private slots:
 
     void on_pushButton_clicked();
 
+    void on_actionBust_triggered();
+
+    void on_actionSurrender_triggered();
+
+    void on_actionWin_triggered();
+
 public:
     explicit MainWindow(QWidget *parent = 0);
    double gainslosses=0;
