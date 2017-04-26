@@ -194,7 +194,7 @@ void MainWindow::Start_Game()
 
     Players_Turn = "<font color=black>It is currently player #";
     Players_Turn += QString::number(current_player_number + 1);
-    Players_Turn += "'s Turn</font>";
+    Players_Turn += "'s Turn</font><br>";
     ui->textBrowser->setText(Players_Turn);
 
     for (int i = 0; i < Number_of_Players; ++i)
@@ -403,13 +403,13 @@ void MainWindow::on_Stay_Button_clicked()
         while (Dealer[0].Get_Current_Hand_value(0) < 17)
         {
             on_Hit_Button_clicked();
-            Players_Turn += "The Dealer has a Total of ";
+            Players_Turn += "<br>The Dealer has a Total of ";
             Players_Turn += QString::number(Dealer[0].Get_Current_Hand_value(0)) + "\n</font>";
         }
 
         if (Dealer[0].Get_Current_Hand_value(0) > 21)
         {
-            Players_Turn += "<\nThe Dealer has Busted!\n</font>";
+            Players_Turn += "<br>The Dealer has Busted!\n</font><br>";
             ui->textBrowser->setTextColor(defaultColor);
             ui->textBrowser->setText(QString(Players_Turn));
             for (int i = 0; i < players[current_player_number].Get_Hand_Count();++i)
