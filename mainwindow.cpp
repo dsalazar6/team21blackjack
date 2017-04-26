@@ -5,14 +5,20 @@
 #include <QString>
 #include <QTextBrowser>
 #include <QInputDialog>
+#include <QMessageBox>
 #include <QGraphicsOpacityEffect>
 #include <QPropertyAnimation>
 
+
 QList<QLabel*> Images;
 int free_index = 0;
-bool showPrecise = false; //if set to true, shows the count of each type of card
+bool showPrecise = true; //if set to true, shows the count of each type of card
 bool showUsed = true; //if set to false, shows the cards left in the deck and if true, shows cards in hand and in discard
 bool doubledDown = false;
+QString bustColor = "black";
+QString surrenderColor = "black";
+QString winColor = "black";
+QColor defaultColor = "black";
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -20,41 +26,41 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    QPixmap picBust("C:/Users/David/Documents/Qt/build-Blackjack3-Desktop_Qt_5_6_2_MinGW_32bit3-Debug/bust.jpg"); //Place the image location here for the "bust" image, use only '/' slashes
-    QPixmap picWin("C:/Users/David/Documents/Qt/build-Blackjack3-Desktop_Qt_5_6_2_MinGW_32bit3-Debug/win.jpg");   //Place the image location here for the "win" image, use only '/' slashes
-    QPixmap picLoss("C:/Users/David/Documents/Qt/build-Blackjack3-Desktop_Qt_5_6_2_MinGW_32bit3-Debug/dealerwon.png");   //Place the image location here for the "win" image, use only '/' slashes
+    QPixmap picBust("C:/Users/Anguyen14/Documents/QT/build-Blackjack-Desktop_Qt_5_8_0_MinGW_32bit-Debug/bust.jpg"); //Place the image location here for the "bust" image, use only '/' slashes
+    QPixmap picWin("C:/Users\Anguyen14/Documents/QT/build-Blackjack-Desktop_Qt_5_8_0_MinGW_32bit-Debug/win.jpg");   //Place the image location here for the "win" image, use only '/' slashes
+    QPixmap picLoss("C:/Users/Anguyen14/Documents/QT/build-Blackjack-Desktop_Qt_5_8_0_MinGW_32bit-Debug/dealerwon.png");   //Place the image location here for the "win" image, use only '/' slashes
     //image size should be 520x218
 
     ui->labelWin->setPixmap(picWin);
     ui->labelBust->setPixmap(picBust);
     ui->labelLoss->setPixmap(picLoss);
 
-//USE THIS TO PLAY BUST
-            QGraphicsOpacityEffect *eff = new QGraphicsOpacityEffect(this);
-            ui->labelBust->setGraphicsEffect(eff);
-            QPropertyAnimation *a = new QPropertyAnimation(eff,"opacity");
-            a->setDuration(5000);
-            a->setStartValue(0); //change this to 1
-            a->setEndValue(0);
-            a->start(QPropertyAnimation::DeleteWhenStopped);
+    //USE THIS TO PLAY BUST
+                QGraphicsOpacityEffect *eff = new QGraphicsOpacityEffect(this);
+                ui->labelBust->setGraphicsEffect(eff);
+                QPropertyAnimation *a = new QPropertyAnimation(eff,"opacity");
+                a->setDuration(5000);
+                a->setStartValue(0); //change this to 1
+                a->setEndValue(0);
+                a->start(QPropertyAnimation::DeleteWhenStopped);
 
-// USE THIS TO PLAY WIN
-            QGraphicsOpacityEffect *eff2 = new QGraphicsOpacityEffect(this);
-            ui->labelWin->setGraphicsEffect(eff2);
-            QPropertyAnimation *b = new QPropertyAnimation(eff2,"opacity");
-            b->setDuration(5000);
-            b->setStartValue(0); //change this to 1
-            b->setEndValue(0);
-            b->start(QPropertyAnimation::DeleteWhenStopped);
+    // USE THIS TO PLAY WIN
+                QGraphicsOpacityEffect *eff2 = new QGraphicsOpacityEffect(this);
+                ui->labelWin->setGraphicsEffect(eff2);
+                QPropertyAnimation *b = new QPropertyAnimation(eff2,"opacity");
+                b->setDuration(5000);
+                b->setStartValue(0); //change this to 1
+                b->setEndValue(0);
+                b->start(QPropertyAnimation::DeleteWhenStopped);
 
-// USE THIS TO PLAY LOSS
-            QGraphicsOpacityEffect *eff3 = new QGraphicsOpacityEffect(this);
-            ui->labelLoss->setGraphicsEffect(eff3);
-            QPropertyAnimation *c = new QPropertyAnimation(eff3,"opacity");
-            c->setDuration(5000);
-            c->setStartValue(0); //change this to 1
-            c->setEndValue(0);
-            c->start(QPropertyAnimation::DeleteWhenStopped);
+    // USE THIS TO PLAY LOSS
+                QGraphicsOpacityEffect *eff3 = new QGraphicsOpacityEffect(this);
+                ui->labelLoss->setGraphicsEffect(eff3);
+                QPropertyAnimation *c = new QPropertyAnimation(eff3,"opacity");
+                c->setDuration(5000);
+                c->setStartValue(0); //change this to 1
+                c->setEndValue(0);
+                c->start(QPropertyAnimation::DeleteWhenStopped);
 
     Chip_name = "Poker_Chip.png";
     //Change_user("BOB");
@@ -68,7 +74,7 @@ MainWindow::MainWindow(QWidget *parent) :
         Chip_Values.push_back(new QTextBrowser(this));
     }
     Chip_Values[2]->hide();
-    Title_Message = "BlackJack Game: Version 2.1";
+    Title_Message = "BlackJack Game: Version 1.9";
     this->setWindowTitle(Title_Message);
     Deck.addStandardDeck(1);
     Deck.Shuffle();
@@ -83,7 +89,6 @@ MainWindow::MainWindow(QWidget *parent) :
     */
     Start_Game();
 }
-
 
 void MainWindow::Update_Card_Count()
 {
@@ -187,24 +192,30 @@ void MainWindow::Start_Game()
         }
     }
 
-    Players_Turn = "It is currently player #";
+    Players_Turn = "<font color=black>It is currently player #";
     Players_Turn += QString::number(current_player_number + 1);
-    Players_Turn += "'s Turn\n";
+    Players_Turn += "'s Turn</font>";
     ui->textBrowser->setText(Players_Turn);
 
     for (int i = 0; i < Number_of_Players; ++i)
     {
-            players[i].Set_Total_ChipsAmount(500.00+gainslosses);
-
-
-        double bet_amount;
-        do
-        {
-            bet_amount = QInputDialog::getInt(this, "Bet_Value", "Please enter the bet amount you want to put in(Minimum $5.00)",5);
+        players[i].Set_Total_ChipsAmount(500.00+gainslosses);
+        if (players[i].Get_Total_ChipsAmount() <= 0) {
+            QMessageBox::information(this, "GAME OVER", "You have run out of money to bet. The game will now close.");
+            QApplication::quit();
         }
-        while (bet_amount < 5.00 || bet_amount > players[i].Get_Total_ChipsAmount());
+        else {
+            Chip_Values[0]->setText(QString("Total_Chips: $" + QString::number(players[current_player_number].Get_Total_ChipsAmount())));
+
+            double bet_amount;
+            do
+            {
+                bet_amount = QInputDialog::getInt(this, "Bet_Value", "Please enter the bet amount you want to put in(Minimum $5.00)",5);
+            }
+            while (bet_amount < 5.00 || bet_amount > players[i].Get_Total_ChipsAmount());
 
         players[i].Add_Bet(bet_amount);
+        }
     }
 
     Chips_coordinates = players[current_player_number].Get_Poker_coordinates();
@@ -253,17 +264,10 @@ void MainWindow::on_Hit_Button_clicked()
         else
             ui->Double_Down->hide();
     }
-    if (Dealers_Turn)
+   /*if (Dealers_Turn)
     {
         if (Dealer[0].Is_Busted(0))
         {
-            QGraphicsOpacityEffect *eff2 = new QGraphicsOpacityEffect(this);
-            ui->labelWin->setGraphicsEffect(eff2);
-            QPropertyAnimation *b = new QPropertyAnimation(eff2,"opacity");
-            b->setDuration(5000);
-            b->setStartValue(1);
-            b->setEndValue(0);
-            b->start(QPropertyAnimation::DeleteWhenStopped);
             ;//Dialog_Text = "Dealer Busted with a value of " + QString::number(Dealer[0].Get_Current_Hand_value(0)) + "\n";
         }
         else
@@ -277,30 +281,65 @@ void MainWindow::on_Hit_Button_clicked()
             //ui->textBrowser->setText("You Busted with a value of " + QString::number(players[current_player_number].Get_Current_Hand_value(current_hand_number)) + "\n");
             on_Stay_Button_clicked();
             gainslosses -= (Chips_coordinates[1].total_amount);
-
-
-            //Play Bust animation
-            ui->labelBust->show();
-            QGraphicsOpacityEffect *eff2 = new QGraphicsOpacityEffect(this);
-            ui->labelBust->setGraphicsEffect(eff2);
-            QPropertyAnimation *b = new QPropertyAnimation(eff2,"opacity");
-            b->setDuration(5000);
-            b->setStartValue(1);
-            b->setEndValue(0);
-            b->start(QPropertyAnimation::DeleteWhenStopped);
             return;
         }
         else
         {
             Dialog_Text = "Your current hand value is " + QString::number(players[current_player_number].Get_Current_Hand_value(current_hand_number)) + "\n";
+
             ui->textBrowser->setText((QString)"Your current hand value is " + QString::number(players[current_player_number].Get_Current_Hand_value(current_hand_number)) + (QString)"\n");
         }
-    }
+    }*/
+    if (Dealers_Turn)
+        {
+            if (Dealer[0].Is_Busted(0))
+            {
+                QGraphicsOpacityEffect *eff2 = new QGraphicsOpacityEffect(this);
+                ui->labelWin->setGraphicsEffect(eff2);
+                QPropertyAnimation *b = new QPropertyAnimation(eff2,"opacity");
+                b->setDuration(5000);
+                b->setStartValue(1);
+                b->setEndValue(0);
+                b->start(QPropertyAnimation::DeleteWhenStopped);
+                ;//Dialog_Text = "Dealer Busted with a value of " + QString::number(Dealer[0].Get_Current_Hand_value(0)) + "\n";
+            }
+            else
+                ;//Dialog_Text = "Dealers current hand value is " + QString::number(Dealer[0].Get_Current_Hand_value(0)) + "\n";
+        }
+        else
+        {
+            if (players[current_player_number].Is_Busted(current_hand_number))
+            {
+                //Dialog_Text = "You Busted with a value of " + QString::number(players[current_player_number].Get_Current_Hand_value(current_hand_number)) + "\n";
+                //ui->textBrowser->setText("You Busted with a value of " + QString::number(players[current_player_number].Get_Current_Hand_value(current_hand_number)) + "\n");
+                on_Stay_Button_clicked();
+                gainslosses -= (Chips_coordinates[1].total_amount);
+
+
+                //Play Bust animation
+                ui->labelBust->show();
+
+                QGraphicsOpacityEffect *eff2 = new QGraphicsOpacityEffect(this);
+                ui->labelBust->setGraphicsEffect(eff2);
+                QPropertyAnimation *b = new QPropertyAnimation(eff2,"opacity");
+                b->setDuration(5000);
+                b->setStartValue(1);
+                b->setEndValue(0);
+                b->start(QPropertyAnimation::DeleteWhenStopped);
+                return;
+            }
+            else
+            {
+                Dialog_Text = "Your current hand value is " + QString::number(players[current_player_number].Get_Current_Hand_value(current_hand_number)) + "\n";
+                ui->textBrowser->setText((QString)"Your current hand value is " + QString::number(players[current_player_number].Get_Current_Hand_value(current_hand_number)) + (QString)"\n");
+            }
+        }
 
 
     if (!players_out)
     {
-        Dialog_Text = Players_Turn + Dialog_Text;
+        Dialog_Text = Players_Turn + "\n" +Dialog_Text;
+        ui->textBrowser->setTextColor(defaultColor);
         ui->textBrowser->setText(Dialog_Text);
     }
     Update_Card_Count();
@@ -337,7 +376,7 @@ void MainWindow::on_Stay_Button_clicked()
         Dealers_Turn = true;
         int id = Dealer[0].Flip_Card(0);
         Deck.changeCardCount(id, -1);
-        Players_Turn = "It is currently the Dealers's turn\n";
+        Players_Turn = "<font color=black>It is currently the Dealer's turn";
         current_hand_number = 0;
 
         players_out = true;
@@ -351,18 +390,12 @@ void MainWindow::on_Stay_Button_clicked()
 
         if (players_out)
         {
-            ui->textBrowser->setText("You Busted with a value of " + QString::number(players[current_player_number].Get_Current_Hand_value(current_hand_number)) + "\nThe Dealer Won!\n");
+            QColor color1 = bustColor;
+            ui->textBrowser->setTextColor(color1);
+            ui->textBrowser->append("You Busted with a value of " + QString::number(players[current_player_number].Get_Current_Hand_value(current_hand_number)));
+            ui->textBrowser->append("<font color=black>\nThe Dealer Won!\n</font>");
             //
-           /* QGraphicsOpacityEffect *eff3 = new QGraphicsOpacityEffect(this);
-            ui->labelLoss->setGraphicsEffect(eff3);
-            QPropertyAnimation *c = new QPropertyAnimation(eff3,"opacity");
-            c->setDuration(5000);
-            c->setStartValue(1);
-            c->setEndValue(0);
-            c->start(QPropertyAnimation::DeleteWhenStopped);*/
-            //ui->New_Game->show();
-            doubledDown = false;
-            New_Game();
+            ui->New_Game->show();
             return;
         }
         Update_Card_Count();
@@ -371,18 +404,21 @@ void MainWindow::on_Stay_Button_clicked()
         {
             on_Hit_Button_clicked();
             Players_Turn += "The Dealer has a Total of ";
-            Players_Turn += QString::number(Dealer[0].Get_Current_Hand_value(0));
+            Players_Turn += QString::number(Dealer[0].Get_Current_Hand_value(0)) + "\n</font>";
         }
 
         if (Dealer[0].Get_Current_Hand_value(0) > 21)
         {
-            Players_Turn += "\nThe Dealer has Busted!\n";
+            Players_Turn += "<\nThe Dealer has Busted!\n</font>";
+            ui->textBrowser->setTextColor(defaultColor);
             ui->textBrowser->setText(QString(Players_Turn));
             for (int i = 0; i < players[current_player_number].Get_Hand_Count();++i)
             {
                 if (!(players[current_player_number].Is_Busted(i)) && !getSurrender())
                 {
                     //we need to update the bet money at this point
+                    QColor color3 = winColor;
+                    ui->textBrowser->setTextColor(color3);
                     ui->textBrowser->setText(ui->textBrowser->toPlainText() + QString("Player 1 hand ") + QString::number(i + 1) + QString(": won \n"));
                     gainslosses+=(Chips_coordinates[1].total_amount);
 
@@ -394,8 +430,11 @@ void MainWindow::on_Stay_Button_clicked()
                     b->setStartValue(1);
                     b->setEndValue(0);
                     b->start(QPropertyAnimation::DeleteWhenStopped);
-
                 }
+            }
+            for (int i = 0; i < players[current_player_number].Get_Hand_Count();++i)
+            {
+                Chip_Values[0]->setText(QString("Total_Chips: $" + QString::number(players[current_player_number].Get_Total_ChipsAmount())));
             }
 
         }
@@ -408,12 +447,15 @@ void MainWindow::on_Stay_Button_clicked()
             {
                 if (Dealer_total < players[current_player_number].Get_Current_Hand_value(i) && players[current_player_number].Get_Current_Hand_value(i) < 22 && !getSurrender())
                 {
+                    QColor color3 = winColor;
+                    ui->textBrowser->setTextColor(color3);
                     ui->textBrowser->setText(ui->textBrowser->toPlainText() + QString("Player 1 hand ") + QString::number(i + 1) + QString(": won \n"));
                     gainslosses+=(Chips_coordinates[1].total_amount);
                     if (doubledDown)
                     {
                         gainslosses+=(Chips_coordinates[1].total_amount);
                     }
+
                     //Play win animation
                     QGraphicsOpacityEffect *eff2 = new QGraphicsOpacityEffect(this);
                     ui->labelWin->setGraphicsEffect(eff2);
@@ -422,10 +464,25 @@ void MainWindow::on_Stay_Button_clicked()
                     b->setStartValue(1);
                     b->setEndValue(0);
                     b->start(QPropertyAnimation::DeleteWhenStopped);
+
                 }
                 else
+                {
                     Dealer_Beat_someone = true;
+                    /*if (!getSurrender())
+                    {
+                         ui->textBrowser->setText(ui->textBrowser->toPlainText() + QString("Player 1 hand ") + QString::number(i + 1) + QString(": lost \n"));
+                        gainslosses-=(Chips_coordinates[1].total_amount);
+                        if (doubledDown)
+                        {
+                            gainslosses-=(Chips_coordinates[1].total_amount);
+                        }
+                        ui->textBrowser->setText(ui->textBrowser->toPlainText() + QString("Dealer won"));
+                    }*/
+                }
+
             }
+             Chip_Values[0]->setText(QString("Total_Chips: $" + QString::number(players[current_player_number].Get_Total_ChipsAmount())));
             if (Dealer_Beat_someone && !getSurrender())
             {
                 gainslosses-=(Chips_coordinates[1].total_amount);
@@ -433,9 +490,9 @@ void MainWindow::on_Stay_Button_clicked()
                 {
                     gainslosses-=(Chips_coordinates[1].total_amount);
                 }
-                //Play loss animation
-
                 ui->textBrowser->setText(ui->textBrowser->toPlainText() + QString("Dealer won"));
+
+                //Play loss animation
 
                 QGraphicsOpacityEffect *eff3 = new QGraphicsOpacityEffect(this);
                 ui->labelLoss->setGraphicsEffect(eff3);
@@ -448,9 +505,7 @@ void MainWindow::on_Stay_Button_clicked()
             }
         }
         setUserSurrender(false);
-        //ui->New_Game->show
-        doubledDown = false;
-        New_Game();
+        ui->New_Game->show();
     }
     else
     {
@@ -553,6 +608,8 @@ void MainWindow::on_Surrender_clicked()
         cout << "YOU LOST HALF OF YOUR MONEY!!!!!!!!" << endl;
         Chip_Values[0]->setText(QString("Total_Chips: $") + QString::number(Chips_coordinates[0].total_amount + (Chips_coordinates[1].total_amount / 2)));
         gainslosses-=(Chips_coordinates[1].total_amount/2);
+        QColor color2 = surrenderColor;
+        ui->textBrowser->setTextColor(color2);
         ui->textBrowser->setText("You Lost the game with half your money back");
         //New_Game();
         setUserSurrender(true);
@@ -567,8 +624,15 @@ void MainWindow::on_Surrender_clicked()
 }
 void MainWindow::on_New_Game_clicked()
 {
-    doubledDown = false;
-    New_Game();
+    ui->textBrowser->clear();
+    //else {
+        for (int i = 0; i < players[current_player_number].Get_Hand_Count();++i)
+        {
+            Chip_Values[0]->setText(QString("Total_Chips: $" + QString::number(players[current_player_number].Get_Total_ChipsAmount())));
+        }
+        doubledDown = false;
+        New_Game();
+    //}
 }
 
 bool MainWindow::Change_user(string username)
@@ -584,7 +648,6 @@ void MainWindow::on_pushButton_clicked()
         ui->textBrowser_2->hide();
     else
         ui->textBrowser_2->show();
-
 }
 
 MainWindow::~MainWindow()
@@ -594,4 +657,26 @@ MainWindow::~MainWindow()
         delete Images.takeAt(0);
     }
     delete ui;
+}
+
+void MainWindow::on_actionBust_triggered()
+{
+    bustColor = QInputDialog::getText(this, "Bust Color","Enter color name or RGB code: ", QLineEdit::Normal, bustColor);
+    if(bustColor.isEmpty())
+       bustColor = "black";
+
+}
+
+void MainWindow::on_actionSurrender_triggered()
+{
+    surrenderColor = QInputDialog::getText(this, "Surrender Color","Enter color name or RGB code: ", QLineEdit::Normal, surrenderColor);
+    if(surrenderColor.isEmpty())
+       surrenderColor = "black";
+}
+
+void MainWindow::on_actionWin_triggered()
+{
+    winColor = QInputDialog::getText(this, "Win Color","Enter color name or RGB code: ", QLineEdit::Normal, winColor);
+    if(winColor.isEmpty())
+       winColor = "black";
 }
