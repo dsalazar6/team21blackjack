@@ -1,12 +1,21 @@
-winColor 0 255 0
-loseColor 255 0 0
-casinoRules default
-*doubleDownMin 9
-*doubleDownMax 11
-*dealerStop 17
-*surrenderAvaliable 1
-showCount 1
-showRemaining 1
-showPrecise 1
-defaultBet 5
-startMoney 500
+*Variable                    | Meaning
+winColor 0 255 0             | RGB color for the message when the player wins
+loseColor 255 0 0            | RGB color for the message when the player loses
+casinoRules default          | The collection of casino rules used
+*splitMin 0                  | The minimum index of a card where splitting is possible
+*splitMax 12                 | The maximum index of a card where splitting is possible
+*splitSameValue 0            | If 1, allows splits for 10/J/Q/K
+*splitAvaliable 1            | If 1, split option is avaliable
+*doubleDownMin 9             | The minimum value that double down is avaliable
+*doubleDownMax 11            | The maximum value that double down is avaliable
+*doubleDownAvaliable 1       | If 1, double down option is avaliable
+*dealerStop 17               | If the dealer's score >= this value, it stops drawing cards
+*surrenderLoss 0.5           | The proportion of the bet the player loses when surrundering
+*surrenderAvaliable 1        | If 1, surrunder option is avaliable
+*winMultiplier 1.0           | If the player wins, the player gets back the bet and this value times the bet
+showCount 1                  | If 1, shows the card count
+showRemaining 1              | If 1, shows the cards remaining in the deck
+showPrecise 1                | If 1, shows the counts for the individual cards. If 0, shows high/low count.
+defaultBet 5                 | The default bet the player makes
+minBet 5                     | The minimum amount of the money the player can bet
+startMoney 500               | The amount of money the player starts with
