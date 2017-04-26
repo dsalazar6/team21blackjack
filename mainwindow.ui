@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>727</width>
-    <height>492</height>
+    <width>987</width>
+    <height>543</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -75,16 +75,6 @@
      <string>Split</string>
     </property>
    </widget>
-   <widget class="QTextBrowser" name="textBrowser">
-    <property name="geometry">
-     <rect>
-      <x>530</x>
-      <y>290</y>
-      <width>201</width>
-      <height>171</height>
-     </rect>
-    </property>
-   </widget>
    <widget class="QPushButton" name="New_Game">
     <property name="geometry">
      <rect>
@@ -127,8 +117,8 @@
    <widget class="QTextBrowser" name="textBrowser_2">
     <property name="geometry">
      <rect>
-      <x>560</x>
-      <y>90</y>
+      <x>770</x>
+      <y>80</y>
       <width>141</width>
       <height>191</height>
      </rect>
@@ -137,8 +127,8 @@
    <widget class="QPushButton" name="pushButton">
     <property name="geometry">
      <rect>
-      <x>470</x>
-      <y>140</y>
+      <x>800</x>
+      <y>50</y>
       <width>80</width>
       <height>22</height>
      </rect>
@@ -186,11 +176,20 @@
      <string>                                                     This is where it will show general loss</string>
     </property>
    </widget>
+   <widget class="QTextEdit" name="textBrowser">
+    <property name="geometry">
+     <rect>
+      <x>740</x>
+      <y>290</y>
+      <width>201</width>
+      <height>141</height>
+     </rect>
+    </property>
+   </widget>
    <zorder>Table</zorder>
    <zorder>Hit_Button</zorder>
    <zorder>Stay_Button</zorder>
    <zorder>Split_Button</zorder>
-   <zorder>textBrowser</zorder>
    <zorder>New_Game</zorder>
    <zorder>Double_Down</zorder>
    <zorder>Surrender</zorder>
@@ -199,13 +198,14 @@
    <zorder>labelBust</zorder>
    <zorder>labelWin</zorder>
    <zorder>labelLoss</zorder>
+   <zorder>textBrowser</zorder>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>727</width>
+     <width>987</width>
      <height>21</height>
     </rect>
    </property>
@@ -223,7 +223,22 @@
     <addaction name="actionOptions"/>
     <addaction name="menuChange_Game"/>
    </widget>
+   <widget class="QMenu" name="menuSettings">
+    <property name="title">
+     <string>Settings</string>
+    </property>
+    <widget class="QMenu" name="menuColor_Settings">
+     <property name="title">
+      <string>Color Settings</string>
+     </property>
+     <addaction name="actionBust"/>
+     <addaction name="actionSurrender"/>
+     <addaction name="actionWin"/>
+    </widget>
+    <addaction name="menuColor_Settings"/>
+   </widget>
    <addaction name="menuBlackJack"/>
+   <addaction name="menuSettings"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
@@ -252,6 +267,21 @@
   <action name="actionMirage_Casino_Rules">
    <property name="text">
     <string>Mirage Casino Rules</string>
+   </property>
+  </action>
+  <action name="actionBust">
+   <property name="text">
+    <string>Bust</string>
+   </property>
+  </action>
+  <action name="actionSurrender">
+   <property name="text">
+    <string>Surrender</string>
+   </property>
+  </action>
+  <action name="actionWin">
+   <property name="text">
+    <string>Win</string>
    </property>
   </action>
  </widget>
