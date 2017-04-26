@@ -26,9 +26,9 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    QPixmap picBust("C:/Users/Anguyen14/Documents/QT/build-Blackjack-Desktop_Qt_5_8_0_MinGW_32bit-Debug/bust.jpg"); //Place the image location here for the "bust" image, use only '/' slashes
-    QPixmap picWin("C:/Users\Anguyen14/Documents/QT/build-Blackjack-Desktop_Qt_5_8_0_MinGW_32bit-Debug/win.jpg");   //Place the image location here for the "win" image, use only '/' slashes
-    QPixmap picLoss("C:/Users/Anguyen14/Documents/QT/build-Blackjack-Desktop_Qt_5_8_0_MinGW_32bit-Debug/dealerwon.png");   //Place the image location here for the "win" image, use only '/' slashes
+    QPixmap picBust("bust.jpg"); //Place the image location here for the "bust" image, use only '/' slashes
+    QPixmap picWin("win.jpg");   //Place the image location here for the "win" image, use only '/' slashes
+    QPixmap picLoss("dealerwon.png");   //Place the image location here for the "win" image, use only '/' slashes
     //image size should be 520x218
 
     ui->labelWin->setPixmap(picWin);
