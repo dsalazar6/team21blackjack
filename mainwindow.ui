@@ -219,8 +219,14 @@
      </property>
      <addaction name="actionNormal_Game"/>
     </widget>
+    <widget class="QMenu" name="menuRule_Settings">
+     <property name="title">
+      <string>Rule Settings</string>
+     </property>
+     <addaction name="actionDouble_Down"/>
+    </widget>
     <addaction name="actionNew_Game"/>
-    <addaction name="actionOptions"/>
+    <addaction name="menuRule_Settings"/>
     <addaction name="menuChange_Game"/>
    </widget>
    <widget class="QMenu" name="menuSettings">
@@ -254,11 +260,6 @@
     <string>New Game</string>
    </property>
   </action>
-  <action name="actionOptions">
-   <property name="text">
-    <string>Options</string>
-   </property>
-  </action>
   <action name="actionNormal_Game">
    <property name="text">
     <string>Normal Game Rules</string>
@@ -282,6 +283,11 @@
   <action name="actionWin">
    <property name="text">
     <string>Win</string>
+   </property>
+  </action>
+  <action name="actionDouble_Down">
+   <property name="text">
+    <string>Double Down</string>
    </property>
   </action>
  </widget>
