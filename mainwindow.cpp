@@ -680,3 +680,24 @@ void MainWindow::on_actionWin_triggered()
     if(winColor.isEmpty())
        winColor = "black";
 }
+
+void MainWindow::on_actionDouble_Down_triggered()
+{
+    QMessageBox messageBox(this);
+    QAbstractButton *RenoButton =
+          messageBox.addButton(tr("Reno Rules (9/10/11)"), QMessageBox::ActionRole);
+    QAbstractButton *HouseButton =
+          messageBox.addButton(tr("House Rules (Any first 2 and 9/10/11)"), QMessageBox::ActionRole);
+    QAbstractButton *EuropeButton =
+          messageBox.addButton(tr("European Rules (10/11)"), QMessageBox::ActionRole);
+    messageBox.exec();
+    if (messageBox.clickedButton() == RenoButton) {
+// Put code here
+    }
+    if (messageBox.clickedButton() == HouseButton) {
+// Put code here
+    }
+    if (messageBox.clickedButton() == EuropeButton) {
+// Put code here
+    }
+}
