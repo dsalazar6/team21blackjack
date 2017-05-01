@@ -240,6 +240,7 @@
      <addaction name="actionBust"/>
      <addaction name="actionSurrender"/>
      <addaction name="actionWin"/>
+     <addaction name="actionLose"/>
     </widget>
     <addaction name="menuColor_Settings"/>
    </widget>
@@ -288,6 +289,11 @@
   <action name="actionDouble_Down">
    <property name="text">
     <string>Double Down</string>
+   </property>
+  </action>
+  <action name="actionLose">
+   <property name="text">
+    <string>Lose</string>
    </property>
   </action>
  </widget>
