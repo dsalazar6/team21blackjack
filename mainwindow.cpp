@@ -18,6 +18,7 @@ bool doubledDown = false;
 QString bustColor = "black";
 QString surrenderColor = "black";
 QString winColor = "black";
+QString lostColor = "black";
 QColor defaultColor = "black";
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -26,9 +27,10 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    QPixmap picBust("bust.jpg"); //Place the image location here for the "bust" image, use only '/' slashes
-    QPixmap picWin("win.jpg");   //Place the image location here for the "win" image, use only '/' slashes
-    QPixmap picLoss("dealerwon.png");   //Place the image location here for the "win" image, use only '/' slashes
+    // Directory locations of the pictures that will be used in the animation: Bust, Win, Dealer won
+    QPixmap picBust("C:/Users/Anguyen14/Documents/QT/build-Blackjack-Desktop_Qt_5_8_0_MinGW_32bit-Debug/bust.jpg"); //Place the image location here for the "bust" image, use only '/' slashes
+    QPixmap picWin("C:/Users\Anguyen14/Documents/QT/build-Blackjack-Desktop_Qt_5_8_0_MinGW_32bit-Debug/win.jpg");   //Place the image location here for the "win" image, use only '/' slashes
+    QPixmap picLoss("C:/Users/Anguyen14/Documents/QT/build-Blackjack-Desktop_Qt_5_8_0_MinGW_32bit-Debug/dealerwon.png");   //Place the image location here for the "win" image, use only '/' slashes
     //image size should be 520x218
 
     ui->labelWin->setPixmap(picWin);
@@ -89,7 +91,7 @@ MainWindow::MainWindow(QWidget *parent) :
     */
     Start_Game();
 }
-
+// This function should update and display the cards that have already been used from the deck
 void MainWindow::Update_Card_Count()
 {
     Deck.setRemainingUsed(!showUsed);
@@ -147,7 +149,7 @@ void MainWindow::Update_Card_Count()
 void MainWindow::Start_Game()
 {
     ui->New_Game->hide();
-    ui->Split_Button->hide();
+    //ui->Split_Button->hide();
     ui->Double_Down->hide();
     ui->Surrender->show();
     for (int i = 0; i < 5; ++i)
@@ -201,8 +203,16 @@ void MainWindow::Start_Game()
     {
         players[i].Set_Total_ChipsAmount(500.00+gainslosses);
         if (players[i].Get_Total_ChipsAmount() <= 0) {
-            QMessageBox::information(this, "GAME OVER", "You have run out of money to bet. The game will now close.");
-            QApplication::quit();
+            QMessageBox::StandardButton msgBox;
+            // Asks the user if they want more chips, if no: game closes, if yes: the user gets 500 chips and new game begins
+            msgBox = QMessageBox::information(this, "GAME OVER", "You have run out of money to bet. Want 500 more chips? ", QMessageBox::Yes|QMessageBox::No);
+            if (msgBox == QMessageBox::Yes){
+                // Reset total chips back to 500
+                gainslosses = 0;
+                New_Game();
+            }
+            else
+                QApplication::quit();
         }
         else {
             Chip_Values[0]->setText(QString("Total_Chips: $" + QString::number(players[current_player_number].Get_Total_ChipsAmount())));
@@ -239,11 +249,11 @@ void MainWindow::Start_Game()
     temp.setHeight(20);
     Chip_Values[1]->setGeometry(temp);
 
-    if (players[current_player_number].Is_Splitable())
-        ui->Split_Button->show();
+   // if (players[current_player_number].Is_Splitable())
+        ui->Split_Button->show();       // makes the Split button available for the user to see and click
 
     if (players[current_player_number].Is_Double_Downable(current_hand_number))
-        ui->Double_Down->show();
+        ui->Double_Down->show();        // makes the Double Down button available for the user to see and click
 }
 
 // This needs to check the hand size and needs to allow them to hit based on how many hands they have
@@ -311,10 +321,12 @@ void MainWindow::on_Hit_Button_clicked()
             if (players[current_player_number].Is_Busted(current_hand_number))
             {
                 //Dialog_Text = "You Busted with a value of " + QString::number(players[current_player_number].Get_Current_Hand_value(current_hand_number)) + "\n";
-                //ui->textBrowser->setText("You Busted with a value of " + QString::number(players[current_player_number].Get_Current_Hand_value(current_hand_number)) + "\n");
+                QColor color1 = bustColor;
+                ui->textBrowser->setTextColor(color1);
+                ui->textBrowser->append("You Busted with a value of " + QString::number(players[current_player_number].Get_Current_Hand_value(current_hand_number)));
+                ui->textBrowser->append("<font color=black>The Dealer Won!<br></font>");
                 on_Stay_Button_clicked();
                 gainslosses -= (Chips_coordinates[1].total_amount);
-
 
                 //Play Bust animation
                 ui->labelBust->show();
@@ -330,7 +342,8 @@ void MainWindow::on_Hit_Button_clicked()
             }
             else
             {
-                Dialog_Text = "Your current hand value is " + QString::number(players[current_player_number].Get_Current_Hand_value(current_hand_number)) + "\n";
+                Dialog_Text = "<font color=black>Your current hand value is " + QString::number(players[current_player_number].Get_Current_Hand_value(current_hand_number)) + "<br></font>";
+                ui->textBrowser->setTextColor(defaultColor);
                 ui->textBrowser->setText((QString)"Your current hand value is " + QString::number(players[current_player_number].Get_Current_Hand_value(current_hand_number)) + (QString)"\n");
             }
         }
@@ -345,6 +358,7 @@ void MainWindow::on_Hit_Button_clicked()
     Update_Card_Count();
 }
 
+
 void MainWindow::New_Game()
 {
     Deck.Discard_Current_Cards();
@@ -353,10 +367,13 @@ void MainWindow::New_Game()
     Poker_Chips[2]->hide();
     Poker_Chips.clear();
     Chip_Values[2]->hide();
-    ui->textBrowser->setText(QString(""));
+    ui->textBrowser->clear();
     Start_Game();
 }
 
+/* Once the Stay button is chosen, the game will determine if the player won or not, based off of the Dealer's value of cards
+   If the plyaer did not bust and beat the dealer's value of cards, then the user wins.  If the Dealer has a higher value of cards and didn't bust
+   or got the same value of cards as the player, then the player lost */
 void MainWindow::on_Stay_Button_clicked()
 {
     if (ui->Surrender->isVisible())
@@ -376,7 +393,7 @@ void MainWindow::on_Stay_Button_clicked()
         Dealers_Turn = true;
         int id = Dealer[0].Flip_Card(0);
         Deck.changeCardCount(id, -1);
-        Players_Turn = "<font color=black>It is currently the Dealer's turn";
+        Players_Turn = "It is currently the Dealer's turn\n";
         current_hand_number = 0;
 
         players_out = true;
@@ -390,11 +407,6 @@ void MainWindow::on_Stay_Button_clicked()
 
         if (players_out)
         {
-            QColor color1 = bustColor;
-            ui->textBrowser->setTextColor(color1);
-            ui->textBrowser->append("You Busted with a value of " + QString::number(players[current_player_number].Get_Current_Hand_value(current_hand_number)));
-            ui->textBrowser->append("<font color=black>\nThe Dealer Won!\n</font>");
-            //
             ui->New_Game->show();
             return;
         }
@@ -403,24 +415,32 @@ void MainWindow::on_Stay_Button_clicked()
         while (Dealer[0].Get_Current_Hand_value(0) < 17)
         {
             on_Hit_Button_clicked();
-            Players_Turn += "<br>The Dealer has a Total of ";
-            Players_Turn += QString::number(Dealer[0].Get_Current_Hand_value(0)) + "\n</font>";
+            ui->textBrowser->setTextColor(defaultColor);
+            Players_Turn += "The Dealer has a Total of ";
+            Players_Turn += QString::number(Dealer[0].Get_Current_Hand_value(0)) + "\n";
         }
+
 
         if (Dealer[0].Get_Current_Hand_value(0) > 21)
         {
-            Players_Turn += "<br>The Dealer has Busted!\n</font><br>";
+            Players_Turn += "\nThe Dealer has Busted!";
             ui->textBrowser->setTextColor(defaultColor);
-            ui->textBrowser->setText(QString(Players_Turn));
+            ui->textBrowser->setText(Players_Turn);
+
             for (int i = 0; i < players[current_player_number].Get_Hand_Count();++i)
             {
+
                 if (!(players[current_player_number].Is_Busted(i)) && !getSurrender())
                 {
                     //we need to update the bet money at this point
                     QColor color3 = winColor;
                     ui->textBrowser->setTextColor(color3);
-                    ui->textBrowser->setText(ui->textBrowser->toPlainText() + QString("Player 1 hand ") + QString::number(i + 1) + QString(": won \n"));
+                    ui->textBrowser->append("Player 1 hand " + QString::number(i + 1) + ": won\n");
                     gainslosses+=(Chips_coordinates[1].total_amount);
+                    if (doubledDown)
+                    {
+                        gainslosses+=(Chips_coordinates[1].total_amount);
+                    }
 
                     //Play win animation
                     QGraphicsOpacityEffect *eff2 = new QGraphicsOpacityEffect(this);
@@ -436,7 +456,6 @@ void MainWindow::on_Stay_Button_clicked()
             {
                 Chip_Values[0]->setText(QString("Total_Chips: $" + QString::number(players[current_player_number].Get_Total_ChipsAmount())));
             }
-
         }
         else
         {
@@ -449,7 +468,7 @@ void MainWindow::on_Stay_Button_clicked()
                 {
                     QColor color3 = winColor;
                     ui->textBrowser->setTextColor(color3);
-                    ui->textBrowser->setText(ui->textBrowser->toPlainText() + QString("Player 1 hand ") + QString::number(i + 1) + QString(": won \n"));
+                    ui->textBrowser->append("Player 1 hand " + QString::number(i + 1) + " won\n");
                     gainslosses+=(Chips_coordinates[1].total_amount);
                     if (doubledDown)
                     {
@@ -469,27 +488,39 @@ void MainWindow::on_Stay_Button_clicked()
                 else
                 {
                     Dealer_Beat_someone = true;
-                    /*if (!getSurrender())
+                    QColor color4 = lostColor;
+                    ui->textBrowser->setTextColor(color4);
+                    ui->textBrowser->append("Player 1 hand " + QString::number(i + 1) + " lost");
+                    ui->textBrowser->append("<font color=black>Dealer won</font>");
+                    if (!getSurrender())
                     {
-                         ui->textBrowser->setText(ui->textBrowser->toPlainText() + QString("Player 1 hand ") + QString::number(i + 1) + QString(": lost \n"));
                         gainslosses-=(Chips_coordinates[1].total_amount);
                         if (doubledDown)
                         {
                             gainslosses-=(Chips_coordinates[1].total_amount);
                         }
-                        ui->textBrowser->setText(ui->textBrowser->toPlainText() + QString("Dealer won"));
-                    }*/
+                        //Play loss animation
+
+                        QGraphicsOpacityEffect *eff3 = new QGraphicsOpacityEffect(this);
+                        ui->labelLoss->setGraphicsEffect(eff3);
+                        QPropertyAnimation *c = new QPropertyAnimation(eff3,"opacity");
+                        c->setDuration(5000);
+                        c->setStartValue(1);
+                        c->setEndValue(0);
+                        c->start(QPropertyAnimation::DeleteWhenStopped);
+                    }
                 }
 
             }
              Chip_Values[0]->setText(QString("Total_Chips: $" + QString::number(players[current_player_number].Get_Total_ChipsAmount())));
-            if (Dealer_Beat_someone && !getSurrender())
+            /*if (Dealer_Beat_someone)
             {
                 gainslosses-=(Chips_coordinates[1].total_amount);
                 if (doubledDown)
                 {
                     gainslosses-=(Chips_coordinates[1].total_amount);
                 }
+                ui->textBrowser->setTextColor(defaultColor);
                 ui->textBrowser->setText(ui->textBrowser->toPlainText() + QString("Dealer won"));
 
                 //Play loss animation
@@ -502,7 +533,7 @@ void MainWindow::on_Stay_Button_clicked()
                 c->setEndValue(0);
                 c->start(QPropertyAnimation::DeleteWhenStopped);
 
-            }
+            }*/
         }
         setUserSurrender(false);
         ui->New_Game->show();
@@ -524,13 +555,17 @@ void MainWindow::on_Stay_Button_clicked()
             ++current_hand_number;
             Players_Turn = "It is currently player #";
             Players_Turn += QString::number(current_player_number + 1);
-            Players_Turn += "'s Turn\nHand number " + QString::number(current_hand_number + 1);
+            Players_Turn += "'s Turn<br>Hand number " + QString::number(current_hand_number + 1) + "<br>";
         }//ui->textBrowser->setText(Players_Turn);
     }
+
     ui->Split_Button->hide();
     ui->Double_Down->hide();
 }
 
+/* If the player has enough money to split their card pair, then this function will not allow player to do so.  In order for a player to split,
+   the player must have a sufficient amount of money and have a pair of the same card.  A new hand will be created and the player will be
+   able to Hit on both hands */
 void MainWindow::on_Split_Button_clicked()
 {
     if (players[current_player_number].Get_Total_ChipsAmount() - Chips_coordinates[Chips_coordinates.size() - 1].total_amount > 0)
@@ -558,6 +593,8 @@ void MainWindow::on_Split_Button_clicked()
     }
 }
 
+/* Double Down will only be available if it satisfies one of the Rules of the game.  This functon will double the player's amount of chips that was previously
+   wagered and draw ONLY ONE card from the deck */
 void MainWindow::on_Double_Down_clicked()
 {
     //Do the bet for doubling down
@@ -601,16 +638,16 @@ void MainWindow::on_Double_Down_clicked()
 const bool getSurrender();
 void setUserSurrender(bool);
 
+/* This function will allow the user to get back half the wagered chips and lose half of the chips if they choose Surrender at the beginning of the game */
 void MainWindow::on_Surrender_clicked()
 {
     if (players.size() == 1)
     {
         cout << "YOU LOST HALF OF YOUR MONEY!!!!!!!!" << endl;
+        //ui->textBrowser->setTextColor(color2);
+        //ui->textBrowser->setText("You LOST the game with half your money back");
         Chip_Values[0]->setText(QString("Total_Chips: $") + QString::number(Chips_coordinates[0].total_amount + (Chips_coordinates[1].total_amount / 2)));
         gainslosses-=(Chips_coordinates[1].total_amount/2);
-        QColor color2 = surrenderColor;
-        ui->textBrowser->setTextColor(color2);
-        ui->textBrowser->setText("You Lost the game with half your money back");
         //New_Game();
         setUserSurrender(true);
         on_Stay_Button_clicked();
@@ -620,8 +657,11 @@ void MainWindow::on_Surrender_clicked()
         ui->Surrender->hide();
         on_Stay_Button_clicked();
     }
-
+    QColor color2 = surrenderColor;
+    ui->textBrowser->setTextColor(color2);
+    ui->textBrowser->setText("You LOST the game with half your money back");
 }
+
 void MainWindow::on_New_Game_clicked()
 {
     ui->textBrowser->clear();
@@ -679,6 +719,13 @@ void MainWindow::on_actionWin_triggered()
     winColor = QInputDialog::getText(this, "Win Color","Enter color name or RGB code: ", QLineEdit::Normal, winColor);
     if(winColor.isEmpty())
        winColor = "black";
+}
+
+void MainWindow::on_actionLose_triggered()
+{
+    lostColor = QInputDialog::getText(this, "Lose Color","Enter color name or RGB code: ", QLineEdit::Normal, lostColor);
+    if(lostColor.isEmpty())
+       lostColor = "black";
 }
 
 void MainWindow::on_actionDouble_Down_triggered()
