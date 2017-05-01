@@ -10,9 +10,9 @@ using namespace std;
 class Rules
 {
 private:
-int winColor[3];
+string winColor;
 QColor winQColor;
-int loseColor[3];
+string loseColor;
 QColor loseQColor;
 int doubleDownMin;
 int doubleDownMax;
@@ -31,13 +31,9 @@ double startMoney;
 public:
 Rules()
  {
-	winColor[0] = 0;
-	winColor[1] = 255;
-	winColor[2] = 0;
+	winColor = "green";
 	winQColor = QColor(0,255,0);
-	loseColor[0] = 255;
-	loseColor[1] = 0;
-	loseColor[2] = 0;
+	loseColor = "red";
 	loseQColor = QColor(255,0,0);
 	doubleDownMin = 9;
 	doubleDownMax = 11;
@@ -65,20 +61,12 @@ void importRules() //Assumes file is formatted correctly
 	   writeRules();
 	   return;
     }
-    int i = 0;
 	getline(file, currentLine);
-    for (int filled = 0; filled < 3; filled ++)
-    {
-	   winColor[filled] = readInt(currentLine) % 256;
-    }
-	//winQColor = QColor(winColor[0], winColor[1], winColor[2]);
+	winColor = currentLine;
+	winQColor = QColor(winColor);
     getline(file,currentLine);
-    i = 0;
-    for (int filled = 0; filled < 3; filled ++)
-    {
-	   loseColor[filled] = readInt(currentLine) % 256;
-    }
-	//loseQColor = QColor(loseColor[0], loseColor[1], loseColor[2]);
+	loseColor = currentLine;
+	loseQColor = QColor(loseColor);;
     getline(file,currentLine);
     doubleDownMin = readInt(currentLine);
 	doubleDownMax = readInt(currentLine);
@@ -109,14 +97,79 @@ void importRules() //Assumes file is formatted correctly
 
 QColor getWinColor()
 {
-	winQColor = QColor(winColor[0], winColor[1], winColor[2]);
+	winQColor = QColor(winColor);
 	return winQColor;
 }
 
 QColor getLoseColor()
 {
-	loseQColor = QColor(loseColor[0], loseColor[1], loseColor[2]);
+	loseQColor = QColor(loseColor);
 	return loseQColor;
+}
+
+int getDDMin()
+{
+	return doubleDownMin;
+}
+
+int getDDMax()
+{
+	return doubleDownMax;
+}
+
+int getStay()
+{
+	return dealerStay;
+}
+
+bool getShowCount()
+{
+	return showCount;
+}
+
+bool getShowRemaining()
+{
+	return showRemaining;
+}
+
+bool getShowPrecise()
+{
+	return showPrecise;
+}
+
+bool getSplitFace()
+{
+	return splitOnFace;
+}
+
+bool getAllowSurrender()
+{
+	return allowSurrender;
+}
+
+double getSurrenderPay()
+{
+	return surrenderPay;
+}
+
+double getWinPay()
+{
+	return winPay;
+}
+
+double getDefaultBet()
+{
+	return defaultBet;
+}
+
+double getMinBet()
+{
+	return minBet;
+}
+
+double getStartMoney()
+{
+	return startMoney;
 }
 
 int readInt(string &line)
