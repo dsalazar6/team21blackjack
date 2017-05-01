@@ -1,14 +1,15 @@
-0 128 0
-255 0 0
-9 11
-17
-true
-true
-true
-false
-true
-0.5
-1
-5
-5
-500
+Meaning                                                           |Default Value
+text color for winning                                            |green
+text color for losing                                             |red
+player can split when score is between these values               |9 11
+minimum value where the dealer must stay                          |17
+shows the card count                                              |true
+shows cards remaining                                             |true
+shows precise card count                                          |true
+allows splitting for same face value                              |false
+allows the surrender option                                       |true
+proportion of bet the player gets back when surrendering          |0.5
+proportion of bet the player gets when winning                    |1
+default bet value                                                 |5
+minimum bet value                                                 |5
+starting money                                                    |500
