@@ -1,18 +1,19 @@
 #ifndef RULES_H
 #define RULES_H
 
-using std::string;
 #include <string>
 #include <fstream>
 #include <iostream>
-#include <QColor>
+//#include <QColor>
+using namespace std;
+
 class Rules
 {
 private:
 int winColor[3];
-QColor winQColor;
+//QColor winQColor;
 int loseColor[3];
-QColor loseQColor;
+//QColor loseQColor;
 int doubleDownMin;
 int doubleDownMax;
 int dealerStay;
@@ -33,13 +34,13 @@ Rules()
 	winColor[0] = 0;
 	winColor[1] = 255;
 	winColor[2] = 0;
-	winQColor = QColor(0,255,0);
+	//winQColor = QColor(0,255,0);
 	loseColor[0] = 255;
 	loseColor[1] = 0;
 	loseColor[2] = 0;
-	loseQColor = QColor(255,0,0);
-	doubledownMin = 9;
-	doubledownMax = 11;
+	//loseQColor = QColor(255,0,0);
+	doubleDownMin = 9;
+	doubleDownMax = 11;
 	dealerStay = 17;
 	showCount = true;
 	showRemaining = true;
@@ -51,7 +52,7 @@ Rules()
 	defaultBet = 5.00;
 	minBet = 5.00;
 	startMoney = 500.00;
-	importRules();
+	//importRules();
  }
 
 void importRules() //Assumes file is formatted correctly
@@ -65,33 +66,34 @@ void importRules() //Assumes file is formatted correctly
 	   return;
     }
     int i = 0;
+	getline(file, currentLine);
     for (int filled = 0; filled < 3; filled ++)
     {
 	   winColor[filled] = readInt(currentLine) % 256;
     }
-	winQColor = QColor(winColor[0], winColor[1], winColor[2]);
+	//winQColor = QColor(winColor[0], winColor[1], winColor[2]);
     getline(file,currentLine);
     i = 0;
     for (int filled = 0; filled < 3; filled ++)
     {
 	   loseColor[filled] = readInt(currentLine) % 256;
     }
-	loseQColor = QColor(loseColor[0], loseColor[1], loseColor[2]);
+	//loseQColor = QColor(loseColor[0], loseColor[1], loseColor[2]);
     getline(file,currentLine);
     doubleDownMin = readInt(currentLine);
 	doubleDownMax = readInt(currentLine);
     getline(file,currentLine);
 	dealerStay = readInt(currentLine);
 	getline(file, currentLine);
-    showCount = (currentLine.compare("1") || currentLine.compare("true"));
+    showCount = (currentLine.compare("1") == 0 || currentLine.compare("true") == 0);
     getline(file,currentLine);
-    showRemaining = (currentLine.compare("1") || currentLine.compare("true"));
+    showRemaining = (currentLine.compare("1") == 0 || currentLine.compare("true") == 0);
     getline(file,currentLine);
-    showPrecise = (currentLine.compare("1") || currentLine.compare("true"));
+    showPrecise = (currentLine.compare("1") == 0 || currentLine.compare("true") == 0);
     getline(file,currentLine);
-	splitOnFace = (currentLine.compare("1") || currentLine.compare("true"));
+	splitOnFace = (currentLine.compare("1") == 0 || currentLine.compare("true") == 0);
 	getline(file, currentLine);
-	allowSurrender = (currentLine.compare("1") || currentLine.compare("true"));
+	allowSurrender = (currentLine.compare("1") == 0 || currentLine.compare("true") == 0);
 	getline(file, currentLine);
 	surrenderPay = readDouble(currentLine);
 	getline(file, currentLine);
@@ -108,15 +110,20 @@ void importRules() //Assumes file is formatted correctly
 int readInt(string &line)
 {
 	int i = 0;
-	while (currentLine[i] < '0' or currentLine[i] > '9')
+	int len = line.length();
+	while (line[i] < '0' || line[i] > '9')
 	{
 		i ++;
+		if (i >= len)
+		{
+			return 0;
+		}
 	}
 	int value = 0;
-	while (currentLine[i] >= '0' and currentLine[i] <= '9')
+	while (line[i] >= '0' && line[i] <= '9')
 	{
 		value = value * 10;
-		value = value + ((int)currentLine[i] - 48);
+		value = value + ((int)line[i] - 48);
 		i ++;
 	}
 	line = line.substr(i);
@@ -126,13 +133,18 @@ int readInt(string &line)
 double readDouble(string &line)
 {
     int i = 0;
-    while (line[i] < '0' or line[i] > '9')
+	int len = line.length();
+    while (line[i] < '0' || line[i] > '9')
 	   {
 		  i ++;
+		  if (i >= len)
+		  {
+			  return 0.0;
+		  }
 	   }
-	   double decimal = 0;
+	   double decimal = 0.0;
 	   int point = 0;
-	   while ((line[i] >= '0' and line[i] <= '9'))
+	   while ((line[i] >= '0' && line[i] <= '9'))
 	   {
 		  decimal = decimal * 10;
 		  decimal = decimal + ((int)line[i] - 48);
@@ -140,16 +152,17 @@ double readDouble(string &line)
 	   }
 	   if (line[i] == '.')
 	   {
-		  while ((line[i] >= '0' and line[i] <= '9'))
+		  i++;
+		  while ((line[i] >= '0' && line[i] <= '9'))
 		  {
-			 decimal = decimal * 10;
+			 decimal = decimal * 10.0;
 			 decimal = decimal + ((int)line[i] - 48);
 			 point ++;
 			 i ++;
 		  }
-		  for (i = 0; i < point; i ++)
+		  for (int j = 0; j < point; j ++)
 		  {
-			 decimal = decimal / 10.0;
+			 decimal = decimal * 0.1;
 		  }
 	   }
 	line = line.substr(i);
@@ -164,34 +177,43 @@ void writeRules()
     file << loseColor[0] << ' ' << loseColor[1] << ' ' << loseColor[2] << '\n';
 	file << doubleDownMin << ' ' << doubleDownMax << '\n';
 	file << dealerStay << '\n';
-    file << showCount << '\n';
-    file << showRemaining << '\n';
-    file << showPrecise << '\n';
-	file << splitOnFace << '\n';
-	file << allowSurrender << '\n';
+    file << booltoString(showCount) << '\n';
+    file << booltoString(showRemaining) << '\n';
+    file << booltoString(showPrecise) << '\n';
+	file << booltoString(splitOnFace) << '\n';
+	file << booltoString(allowSurrender) << '\n';
 	file << surrenderPay << '\n';
 	file << winPay << '\n';
     file << defaultBet << '\n';
     file << minBet << '\n';
     file << startMoney << '\n';
     file.close();
-    printAll();
+    //printAll();
 }
 
-void updateWinColor(int r, ing g, int b)
+string booltoString(bool in)
+{
+	if (in == true)
+	{
+		return "true";
+	}
+	return "false";
+}
+
+void updateWinColor(int r, int g, int b)
 {
 	winColor[0] = r % 256;
 	winColor[1] = g % 256;
 	winColor[2] = b % 256;
-	winQColor = QColor(winColor[0], winColor[1], winColor[2]);
+	//winQColor = QColor(winColor[0], winColor[1], winColor[2]);
 }
 
-void updateLoseColor(int r, ing g, int b)
+void updateLoseColor(int r, int g, int b)
 {
 	loseColor[0] = r % 256;
 	loseColor[1] = g % 256;
 	loseColor[2] = b % 256;
-	loseQColor = QColor(loseColor[0], loseColor[1], loseColor[2]);
+	//loseQColor = QColor(loseColor[0], loseColor[1], loseColor[2]);
 }
 
 void updateCasinoRules(int min, int max, int stay, bool onFace, bool surrender, double sPay, double wPay)
@@ -199,7 +221,7 @@ void updateCasinoRules(int min, int max, int stay, bool onFace, bool surrender, 
 	doubleDownMin = min;
 	doubleDownMax = max;
 	dealerStay = stay;
-	spliOnFace = onFace;
+	splitOnFace = onFace;
 	allowSurrender = surrender;
 	surrenderPay = sPay;
 	winPay = wPay;
@@ -208,7 +230,7 @@ void updateCasinoRules(int min, int max, int stay, bool onFace, bool surrender, 
 void updateCardCount(bool show, bool rem, bool pres)
 {
 	showCount = show;
-	showRmaining = rem;
+	showRemaining = rem;
 	showPrecise = pres;
 }
 
@@ -229,11 +251,11 @@ void printAll() //used for debug
 	cout << loseColor[0] << ' ' << loseColor[1] << ' ' << loseColor[2] << '\n';
 	cout << doubleDownMin << ' ' << doubleDownMax << '\n';
 	cout << dealerStay << '\n';
-	cout << showCount << '\n';
-	cout << showRemaining << '\n';
-	cout << showPrecise << '\n';
-	cout << splitOnFace << '\n';
-	cout << allowSurrender << '\n';
+	cout << booltoString(showCount) << '\n';
+	cout << booltoString(showRemaining) << '\n';
+	cout << booltoString(showPrecise) << '\n';
+	cout << booltoString(splitOnFace) << '\n';
+	cout << booltoString(allowSurrender) << '\n';
 	cout << surrenderPay << '\n';
 	cout << winPay << '\n';
 	cout << defaultBet << '\n';
