@@ -11,9 +11,9 @@ class Rules
 {
 private:
 int winColor[3];
-//QColor winQColor;
+QColor winQColor;
 int loseColor[3];
-//QColor loseQColor;
+QColor loseQColor;
 int doubleDownMin;
 int doubleDownMax;
 int dealerStay;
@@ -34,11 +34,11 @@ Rules()
 	winColor[0] = 0;
 	winColor[1] = 255;
 	winColor[2] = 0;
-	//winQColor = QColor(0,255,0);
+	winQColor = QColor(0,255,0);
 	loseColor[0] = 255;
 	loseColor[1] = 0;
 	loseColor[2] = 0;
-	//loseQColor = QColor(255,0,0);
+	loseQColor = QColor(255,0,0);
 	doubleDownMin = 9;
 	doubleDownMax = 11;
 	dealerStay = 17;
@@ -106,6 +106,18 @@ void importRules() //Assumes file is formatted correctly
     startMoney = readDouble(currentLine);
     file.close();
  }
+
+QColor getWinColor()
+{
+	winQColor = QColor(winColor[0], winColor[1], winColor[2]);
+	return winQColor;
+}
+
+QColor getLoseColor()
+{
+	loseQColor = QColor(loseColor[0], loseColor[1], loseColor[2]);
+	return loseQColor;
+}
 
 int readInt(string &line)
 {
