@@ -71,11 +71,17 @@ private slots:
 
     void on_pushButton_clicked();
 
+    // Functions to change text colors for bust, surrender, win, and lose in the Settings - Color Settings
     void on_actionBust_triggered();
 
     void on_actionSurrender_triggered();
 
     void on_actionWin_triggered();
+
+    void on_actionLose_triggered();
+
+    // Functions to apply to the different Rule options of the game
+    void on_actionDouble_Down_triggered();
 
 public:
     explicit MainWindow(QWidget *parent = 0);
