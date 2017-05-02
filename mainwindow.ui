@@ -224,6 +224,9 @@
       <string>Rule Settings</string>
      </property>
      <addaction name="actionDouble_Down"/>
+     <addaction name="actionDealer_Stays_on"/>
+     <addaction name="actionSurrender_return_values"/>
+     <addaction name="actionSplit"/>
     </widget>
     <addaction name="actionNew_Game"/>
     <addaction name="menuRule_Settings"/>
@@ -294,6 +297,21 @@
   <action name="actionLose">
    <property name="text">
     <string>Lose</string>
+   </property>
+  </action>
+  <action name="actionDealer_Stays_on">
+   <property name="text">
+    <string>Dealer Stays on...</string>
+   </property>
+  </action>
+  <action name="actionSurrender_return_values">
+   <property name="text">
+    <string>Surrender return values</string>
+   </property>
+  </action>
+  <action name="actionSplit">
+   <property name="text">
+    <string>Split</string>
    </property>
   </action>
  </widget>
