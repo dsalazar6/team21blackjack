@@ -15,6 +15,8 @@ int free_index = 0;
 bool showPrecise = true; //if set to true, shows the count of each type of card
 bool showUsed = true; //if set to false, shows the cards left in the deck and if true, shows cards in hand and in discard
 bool doubledDown = false;
+
+// Starting colors of Bust, Surrender, Win, Lose text
 QString bustColor = "black";
 QString surrenderColor = "black";
 QString winColor = "black";
@@ -91,6 +93,7 @@ MainWindow::MainWindow(QWidget *parent) :
     */
     Start_Game();
 }
+
 // This function should update and display the cards that have already been used from the deck
 void MainWindow::Update_Card_Count()
 {
@@ -146,10 +149,11 @@ void MainWindow::Update_Card_Count()
 
 }
 
+// Starts a Blackjack game
 void MainWindow::Start_Game()
 {
     ui->New_Game->hide();
-    //ui->Split_Button->hide();
+    ui->Split_Button->hide();
     ui->Double_Down->hide();
     ui->Surrender->show();
     for (int i = 0; i < 5; ++i)
@@ -249,7 +253,7 @@ void MainWindow::Start_Game()
     temp.setHeight(20);
     Chip_Values[1]->setGeometry(temp);
 
-   // if (players[current_player_number].Is_Splitable())
+    if (players[current_player_number].Is_Splitable())
         ui->Split_Button->show();       // makes the Split button available for the user to see and click
 
     if (players[current_player_number].Is_Double_Downable(current_hand_number))
@@ -468,7 +472,7 @@ void MainWindow::on_Stay_Button_clicked()
                 {
                     QColor color3 = winColor;
                     ui->textBrowser->setTextColor(color3);
-                    ui->textBrowser->append("Player 1 hand " + QString::number(i + 1) + " won\n");
+                    ui->textBrowser->append("Player 1 hand " + QString::number(i + 1) + ": won\n");
                     gainslosses+=(Chips_coordinates[1].total_amount);
                     if (doubledDown)
                     {
@@ -490,8 +494,8 @@ void MainWindow::on_Stay_Button_clicked()
                     Dealer_Beat_someone = true;
                     QColor color4 = lostColor;
                     ui->textBrowser->setTextColor(color4);
-                    ui->textBrowser->append("Player 1 hand " + QString::number(i + 1) + " lost");
-                    ui->textBrowser->append("<font color=black>Dealer won</font>");
+                    ui->textBrowser->append("Player 1 hand " + QString::number(i + 1) + ": lost");
+                    ui->textBrowser->append("<font color=black>Dealer won<br></font>");
                     if (!getSurrender())
                     {
                         gainslosses-=(Chips_coordinates[1].total_amount);
@@ -638,7 +642,7 @@ void MainWindow::on_Double_Down_clicked()
 const bool getSurrender();
 void setUserSurrender(bool);
 
-/* This function will allow the user to get back half the wagered chips and lose half of the chips if they choose Surrender at the beginning of the game */
+/* This function will allow the user to gain back half and lose half of the wagered chips if Surrender is clicked at the beginning of the game */
 void MainWindow::on_Surrender_clicked()
 {
     if (players.size() == 1)
@@ -662,6 +666,7 @@ void MainWindow::on_Surrender_clicked()
     ui->textBrowser->setText("You LOST the game with half your money back");
 }
 
+// Starts a new Blackjack game
 void MainWindow::on_New_Game_clicked()
 {
     ui->textBrowser->clear();
@@ -681,6 +686,7 @@ bool MainWindow::Change_user(string username)
     return true;
 }
 
+// Function to hide and show Card Count
 void MainWindow::on_pushButton_clicked()
 {
     //if the card count is visible, hide it. Otherwise, make it hidden
@@ -699,6 +705,8 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+/* In Settings - Color Settings, if Bust is chosen, a window will pop up and prompt the user to input a color
+   to change the text color for Bust.  If it is empty, default color will be black */
 void MainWindow::on_actionBust_triggered()
 {
     bustColor = QInputDialog::getText(this, "Bust Color","Enter color name or RGB code: ", QLineEdit::Normal, bustColor);
@@ -707,6 +715,8 @@ void MainWindow::on_actionBust_triggered()
 
 }
 
+/* In Settings - Color Settings, if Surrender is chosen, a window will pop up and prompt the user to input a color
+   to change the text color for Surrender.  If it is empty, default color will be black */
 void MainWindow::on_actionSurrender_triggered()
 {
     surrenderColor = QInputDialog::getText(this, "Surrender Color","Enter color name or RGB code: ", QLineEdit::Normal, surrenderColor);
@@ -714,6 +724,8 @@ void MainWindow::on_actionSurrender_triggered()
        surrenderColor = "black";
 }
 
+/* In Settings - Color Settings, if Win is chosen, a window will pop up and prompt the user to input a color
+   to change the text color for Win.  If it is empty, default color will be black */
 void MainWindow::on_actionWin_triggered()
 {
     winColor = QInputDialog::getText(this, "Win Color","Enter color name or RGB code: ", QLineEdit::Normal, winColor);
@@ -721,6 +733,8 @@ void MainWindow::on_actionWin_triggered()
        winColor = "black";
 }
 
+/* In Settings - Color Settings, if Lose is chosen, a window will pop up and prompt the user to input a color
+   to change the text color for Lose.  If it is empty, default color will be black */
 void MainWindow::on_actionLose_triggered()
 {
     lostColor = QInputDialog::getText(this, "Lose Color","Enter color name or RGB code: ", QLineEdit::Normal, lostColor);
@@ -728,6 +742,7 @@ void MainWindow::on_actionLose_triggered()
        lostColor = "black";
 }
 
+// In Options - Rule Settings, if Double Down is chosen, the game will prompt the user to choose what set of rules they want applied to the game
 void MainWindow::on_actionDouble_Down_triggered()
 {
     QMessageBox messageBox(this);
