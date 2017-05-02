@@ -763,3 +763,61 @@ void MainWindow::on_actionDouble_Down_triggered()
 // Put code here
     }
 }
+
+void MainWindow::on_actionDealer_Stays_on_triggered()
+{
+    QMessageBox messageBox(this);
+    QAbstractButton *opt1Button =
+          messageBox.addButton(tr("16"), QMessageBox::ActionRole);
+    QAbstractButton *opt2Button =
+          messageBox.addButton(tr("17"), QMessageBox::ActionRole);
+    QAbstractButton *opt3Button =
+          messageBox.addButton(tr("18"), QMessageBox::ActionRole);
+    messageBox.exec();
+    if (messageBox.clickedButton() == opt1Button) {
+// Put code here
+    }
+    if (messageBox.clickedButton() == opt2Button) {
+// Put code here
+    }
+    if (messageBox.clickedButton() == opt3Button) {
+// Put code here
+    }
+}
+
+void MainWindow::on_actionSurrender_return_values_triggered()
+{
+    QMessageBox messageBox(this);
+    QAbstractButton *opt1Button =
+          messageBox.addButton(tr("25%"), QMessageBox::ActionRole);
+    QAbstractButton *opt2Button =
+          messageBox.addButton(tr("40%"), QMessageBox::ActionRole);
+    QAbstractButton *opt3Button =
+          messageBox.addButton(tr("50%"), QMessageBox::ActionRole);
+    messageBox.exec();
+    if (messageBox.clickedButton() == opt1Button) {
+// Put code here
+    }
+    if (messageBox.clickedButton() == opt2Button) {
+// Put code here
+    }
+    if (messageBox.clickedButton() == opt3Button) {
+// Put code here
+    }
+}
+
+void MainWindow::on_actionSplit_triggered()
+{
+    QMessageBox messageBox(this);
+    QAbstractButton *opt2Button =
+          messageBox.addButton(tr("On Value"), QMessageBox::ActionRole);
+    QAbstractButton *opt3Button =
+          messageBox.addButton(tr("On Suit"), QMessageBox::ActionRole);
+    messageBox.exec();
+    if (messageBox.clickedButton() == opt2Button) {
+// Put code here
+    }
+    if (messageBox.clickedButton() == opt3Button) {
+// Put code here
+    }
+}
