@@ -40,6 +40,7 @@ private:
     int Number_of_Players;
     int turns=1; //Patrick's modification
     bool surrender=false;
+    int automatedBet=-1; //Patrick's automated bets
 
     QString Chip_name;
     QString Title_Message;
@@ -82,6 +83,14 @@ private slots:
 
     // Functions to apply to the different Rule options of the game
     void on_actionDouble_Down_triggered();
+
+    void on_actionDealer_Stays_on_triggered();
+
+    void on_actionSurrender_return_values_triggered();
+
+    void on_actionSplit_triggered();
+
+    void on_actionChange_Autobet_triggered();
 
 public:
     explicit MainWindow(QWidget *parent = 0);
@@ -127,6 +136,14 @@ public:
 
     // Allows the player to change to a different username
     bool Change_user(string username);
+
+    const int getAutomatedBet(){
+        return automatedBet;
+    }
+    void setAutoMatedBet(int automatedBet)
+    {
+     this->automatedBet= automatedBet;
+    }
 
     ~MainWindow();
 

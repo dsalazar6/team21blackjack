@@ -231,6 +231,7 @@
     <addaction name="actionNew_Game"/>
     <addaction name="menuRule_Settings"/>
     <addaction name="menuChange_Game"/>
+    <addaction name="actionChange_Autobet"/>
    </widget>
    <widget class="QMenu" name="menuSettings">
     <property name="title">
@@ -312,6 +313,11 @@
   <action name="actionSplit">
    <property name="text">
     <string>Split</string>
+   </property>
+  </action>
+  <action name="actionChange_Autobet">
+   <property name="text">
+    <string>Change Autobet</string>
    </property>
   </action>
  </widget>

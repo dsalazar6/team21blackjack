@@ -222,13 +222,18 @@ void MainWindow::Start_Game()
             Chip_Values[0]->setText(QString("Total_Chips: $" + QString::number(players[current_player_number].Get_Total_ChipsAmount())));
 
             double bet_amount;
+            if(getAutomatedBet()==-1 || getAutomatedBet()>players[i].Get_Total_ChipsAmount()){
             do
             {
-                bet_amount = QInputDialog::getInt(this, "Bet_Value", "Please enter the bet amount you want to put in(Minimum $5.00)",5);
+
+                bet_amount = QInputDialog::getInt(this, "Bet_Value", "Please enter the initial bet amount you want to put in(Minimum $5.00)",5);
             }
             while (bet_amount < 5.00 || bet_amount > players[i].Get_Total_ChipsAmount());
+            automatedBet= bet_amount;
+            }
+            //added a new condition, requiring this to show up on the first time for the initial bet to be selected and any time the user can't use the automated bet.
 
-        players[i].Add_Bet(bet_amount);
+        players[i].Add_Bet(automatedBet);
         }
     }
 
@@ -809,6 +814,7 @@ void MainWindow::on_actionSurrender_return_values_triggered()
 void MainWindow::on_actionSplit_triggered()
 {
     QMessageBox messageBox(this);
+
     QAbstractButton *opt2Button =
           messageBox.addButton(tr("On Value"), QMessageBox::ActionRole);
     QAbstractButton *opt3Button =
@@ -820,4 +826,17 @@ void MainWindow::on_actionSplit_triggered()
     if (messageBox.clickedButton() == opt3Button) {
 // Put code here
     }
+}
+
+void MainWindow::on_actionChange_Autobet_triggered()
+{
+setAutoMatedBet(-1);
+QMessageBox messageBox(this);
+messageBox.setText("Upon your next turn you will be able to change your bet.");
+QAbstractButton *opt2Button =
+      messageBox.addButton(tr("OK"), QMessageBox::ActionRole);
+if (messageBox.clickedButton() == opt2Button) {
+// Put code here
+}
+messageBox.exec();
 }
