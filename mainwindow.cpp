@@ -1,4 +1,4 @@
-#include "mainwindow.h"
+﻿#include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <QLabel>
 #include <QRect>
@@ -8,19 +8,23 @@
 #include <QMessageBox>
 #include <QGraphicsOpacityEffect>
 #include <QPropertyAnimation>
-
+#include "rules.h"
 
 QList<QLabel*> Images;
 int free_index = 0;
-bool showPrecise = true; //if set to true, shows the count of each type of card
-bool showUsed = true; //if set to false, shows the cards left in the deck and if true, shows cards in hand and in discard
+Rules Settings;
+
+double startMoney = Settings.getStartMoney();
+double lastBet = Settings.getDefaultBet();
+bool showPrecise = Settings.getCountPrecision(); //if set to true, shows the count of each type of card
+bool showUsed = Settings.getCountType(); //if set to false, shows the cards left in the deck and if true, shows cards in hand and in discard
 bool doubledDown = false;
 
 // Starting colors of Bust, Surrender, Win, Lose text
-QString bustColor = "black";
-QString surrenderColor = "black";
-QString winColor = "black";
-QString lostColor = "black";
+QString bustColor = Settings.getLoseColor();
+QString surrenderColor = Settings.getLoseColor();
+QString winColor = Settings.getWinColor();
+QString lostColor = Settings.getLoseColor();
 QColor defaultColor = "black";
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -29,10 +33,9 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    // Directory locations of the pictures that will be used in the animation: Bust, Win, Dealer won
-    QPixmap picBust("C:/Users/Anguyen14/Documents/QT/build-Blackjack-Desktop_Qt_5_8_0_MinGW_32bit-Debug/bust.jpg"); //Place the image location here for the "bust" image, use only '/' slashes
-    QPixmap picWin("C:/Users\Anguyen14/Documents/QT/build-Blackjack-Desktop_Qt_5_8_0_MinGW_32bit-Debug/win.jpg");   //Place the image location here for the "win" image, use only '/' slashes
-    QPixmap picLoss("C:/Users/Anguyen14/Documents/QT/build-Blackjack-Desktop_Qt_5_8_0_MinGW_32bit-Debug/dealerwon.png");   //Place the image location here for the "win" image, use only '/' slashes
+    QPixmap picBust("bust.jpg");
+    QPixmap picWin("win.jpg");
+    QPixmap picLoss("dealerwon.png");
     //image size should be 520x218
 
     ui->labelWin->setPixmap(picWin);
@@ -78,7 +81,7 @@ MainWindow::MainWindow(QWidget *parent) :
         Chip_Values.push_back(new QTextBrowser(this));
     }
     Chip_Values[2]->hide();
-    Title_Message = "BlackJack Game: Version 1.9";
+    Title_Message = "BlackJack Game: Version 2.5";
     this->setWindowTitle(Title_Message);
     Deck.addStandardDeck(1);
     Deck.Shuffle();
@@ -155,7 +158,14 @@ void MainWindow::Start_Game()
     ui->New_Game->hide();
     ui->Split_Button->hide();
     ui->Double_Down->hide();
-    ui->Surrender->show();
+    if (Settings.getAllowSurrender())
+    {
+        ui->Surrender->show();
+    }
+    else
+    {
+        ui->Surrender->hide();
+    }
     for (int i = 0; i < 5; ++i)
     {
         Poker_Chips.push_back(new QLabel(this));
@@ -167,10 +177,47 @@ void MainWindow::Start_Game()
     Dealers_Turn = false;
     players.resize(Number_of_Players);
     Dealer.resize(1);
+    Dealer[0].setRules(Settings);
     Chips_coordinates = players[0].Get_Poker_coordinates();
     //Poker_Chips.resize(1);
     //Chips_coordinates.resize(1);
     Dealer[0].Set_Player_Identity(true);
+    Players_Turn = "<font color=black>It is currently player #";
+    Players_Turn += QString::number(current_player_number + 1);
+    Players_Turn += "'s Turn</font><br>";
+    ui->textBrowser->setText(Players_Turn);
+
+    for (int i = 0; i < Number_of_Players; ++i)
+    {
+        players[i].setRules(Settings);
+        players[i].Set_Total_ChipsAmount(startMoney+gainslosses);
+        if (players[i].Get_Total_ChipsAmount() < Settings.getMinBet()) {
+            QMessageBox::StandardButton msgBox;
+            // Asks the user if they want more chips, if no: game closes, if yes: the user gets 500 chips and new game begins
+            msgBox = QMessageBox::information(this, "GAME OVER", "You have run out of money to bet. Want " + QString::number(startMoney) + " more chips? ", QMessageBox::Yes|QMessageBox::No);
+            if (msgBox == QMessageBox::Yes){
+                // Reset total chips back to 500
+                gainslosses = 0;
+                Start_Game();
+            }
+            else
+                QApplication::quit();
+        }
+        else {
+            Chip_Values[0]->setText(QString("Total_Chips: $" + QString::number(players[current_player_number].Get_Total_ChipsAmount())));
+            if (automatedBet != -1)
+            {
+                double bet_amount;
+                do
+                {
+                    bet_amount = QInputDialog::getInt(this, "Bet_Value", "Please enter the bet amount you want to put in (Minimum $" + QString::number(Settings.getMinBet()) + ")",Settings.getDefaultBet());
+                }
+                while (bet_amount < Settings.getMinBet() || bet_amount > players[i].Get_Total_ChipsAmount());
+            lastBet = bet_amount;
+           }
+        players[i].Add_Bet(lastBet);
+        }
+    }
     for (int i = 0; i < 2; ++i)
     {
         for (int j = 0; j < (int)players.size(); ++j)
@@ -183,9 +230,7 @@ void MainWindow::Start_Game()
         if (i == 1)
             Dealer[0].Flip_Card(0);
     }
-
     Update_Card_Count();
-
     for (int k = 0; k <= (int)players.size(); ++k)
     {
         if (k == (int)players.size()) {
@@ -195,45 +240,6 @@ void MainWindow::Start_Game()
         else {
             cout << "Player #" << k + 1 << " Cards are the Following:" << endl;
             players[k].Display_Hands();
-        }
-    }
-
-    Players_Turn = "<font color=black>It is currently player #";
-    Players_Turn += QString::number(current_player_number + 1);
-    Players_Turn += "'s Turn</font><br>";
-    ui->textBrowser->setText(Players_Turn);
-
-    for (int i = 0; i < Number_of_Players; ++i)
-    {
-        players[i].Set_Total_ChipsAmount(500.00+gainslosses);
-        if (players[i].Get_Total_ChipsAmount() <= 0) {
-            QMessageBox::StandardButton msgBox;
-            // Asks the user if they want more chips, if no: game closes, if yes: the user gets 500 chips and new game begins
-            msgBox = QMessageBox::information(this, "GAME OVER", "You have run out of money to bet. Want 500 more chips? ", QMessageBox::Yes|QMessageBox::No);
-            if (msgBox == QMessageBox::Yes){
-                // Reset total chips back to 500
-                gainslosses = 0;
-                New_Game();
-            }
-            else
-                QApplication::quit();
-        }
-        else {
-            Chip_Values[0]->setText(QString("Total_Chips: $" + QString::number(players[current_player_number].Get_Total_ChipsAmount())));
-
-            double bet_amount;
-            if(getAutomatedBet()==-1 || getAutomatedBet()>players[i].Get_Total_ChipsAmount()){
-            do
-            {
-
-                bet_amount = QInputDialog::getInt(this, "Bet_Value", "Please enter the initial bet amount you want to put in(Minimum $5.00)",5);
-            }
-            while (bet_amount < 5.00 || bet_amount > players[i].Get_Total_ChipsAmount());
-            automatedBet= bet_amount;
-            }
-            //added a new condition, requiring this to show up on the first time for the initial bet to be selected and any time the user can't use the automated bet.
-
-        players[i].Add_Bet(automatedBet);
         }
     }
 
@@ -313,6 +319,7 @@ void MainWindow::on_Hit_Button_clicked()
         {
             if (Dealer[0].Is_Busted(0))
             {
+                ui->textBrowser->setTextColor(winColor);
                 QGraphicsOpacityEffect *eff2 = new QGraphicsOpacityEffect(this);
                 ui->labelWin->setGraphicsEffect(eff2);
                 QPropertyAnimation *b = new QPropertyAnimation(eff2,"opacity");
@@ -381,7 +388,7 @@ void MainWindow::New_Game()
 }
 
 /* Once the Stay button is chosen, the game will determine if the player won or not, based off of the Dealer's value of cards
-   If the plyaer did not bust and beat the dealer's value of cards, then the user wins.  If the Dealer has a higher value of cards and didn't bust
+   If the player did not bust and beat the dealer's value of cards, then the user wins.  If the Dealer has a higher value of cards and didn't bust
    or got the same value of cards as the player, then the player lost */
 void MainWindow::on_Stay_Button_clicked()
 {
@@ -420,8 +427,8 @@ void MainWindow::on_Stay_Button_clicked()
             return;
         }
         Update_Card_Count();
-
-        while (Dealer[0].Get_Current_Hand_value(0) < 17)
+        int stop = Settings.getStay();
+        while (Dealer[0].Get_Current_Hand_value(0) < stop)
         {
             on_Hit_Button_clicked();
             ui->textBrowser->setTextColor(defaultColor);
@@ -445,10 +452,10 @@ void MainWindow::on_Stay_Button_clicked()
                     QColor color3 = winColor;
                     ui->textBrowser->setTextColor(color3);
                     ui->textBrowser->append("Player 1 hand " + QString::number(i + 1) + ": won\n");
-                    gainslosses+=(Chips_coordinates[1].total_amount);
+                    gainslosses+=(Chips_coordinates[1].total_amount * Settings.getWinPay());
                     if (doubledDown)
                     {
-                        gainslosses+=(Chips_coordinates[1].total_amount);
+                        gainslosses+=(Chips_coordinates[1].total_amount * Settings.getWinPay());
                     }
 
                     //Play win animation
@@ -478,10 +485,10 @@ void MainWindow::on_Stay_Button_clicked()
                     QColor color3 = winColor;
                     ui->textBrowser->setTextColor(color3);
                     ui->textBrowser->append("Player 1 hand " + QString::number(i + 1) + ": won\n");
-                    gainslosses+=(Chips_coordinates[1].total_amount);
+                    gainslosses+=(Chips_coordinates[1].total_amount * Settings.getWinPay());
                     if (doubledDown)
                     {
-                        gainslosses+=(Chips_coordinates[1].total_amount);
+                        gainslosses+=(Chips_coordinates[1].total_amount * Settings.getWinPay());
                     }
 
                     //Play win animation
@@ -655,8 +662,8 @@ void MainWindow::on_Surrender_clicked()
         cout << "YOU LOST HALF OF YOUR MONEY!!!!!!!!" << endl;
         //ui->textBrowser->setTextColor(color2);
         //ui->textBrowser->setText("You LOST the game with half your money back");
-        Chip_Values[0]->setText(QString("Total_Chips: $") + QString::number(Chips_coordinates[0].total_amount + (Chips_coordinates[1].total_amount / 2)));
-        gainslosses-=(Chips_coordinates[1].total_amount/2);
+        Chip_Values[0]->setText(QString("Total_Chips: $") + QString::number(Chips_coordinates[0].total_amount + (Chips_coordinates[1].total_amount * Settings.getSurrenderPay())));
+        gainslosses-=(Chips_coordinates[1].total_amount *(1 - Settings.getSurrenderPay()));
         //New_Game();
         setUserSurrender(true);
         on_Stay_Button_clicked();
@@ -699,15 +706,6 @@ void MainWindow::on_pushButton_clicked()
         ui->textBrowser_2->hide();
     else
         ui->textBrowser_2->show();
-}
-
-MainWindow::~MainWindow()
-{
-    for (int i = 0; i < Images.size(); ++i)
-    {
-        delete Images.takeAt(0);
-    }
-    delete ui;
 }
 
 /* In Settings - Color Settings, if Bust is chosen, a window will pop up and prompt the user to input a color
@@ -759,13 +757,14 @@ void MainWindow::on_actionDouble_Down_triggered()
           messageBox.addButton(tr("European Rules (10/11)"), QMessageBox::ActionRole);
     messageBox.exec();
     if (messageBox.clickedButton() == RenoButton) {
-// Put code here
+        Settings.updateDoubleDown(9,11);
     }
     if (messageBox.clickedButton() == HouseButton) {
-// Put code here
+        // bool firstTwo = true;
+        Settings.updateDoubleDown(9,11);
     }
     if (messageBox.clickedButton() == EuropeButton) {
-// Put code here
+        Settings.updateDoubleDown(10,11);
     }
 }
 
@@ -779,14 +778,17 @@ void MainWindow::on_actionDealer_Stays_on_triggered()
     QAbstractButton *opt3Button =
           messageBox.addButton(tr("18"), QMessageBox::ActionRole);
     messageBox.exec();
-    if (messageBox.clickedButton() == opt1Button) {
-// Put code here
+    if (messageBox.clickedButton() == opt1Button)
+    {
+        Settings.updateDealerStay(16);
     }
-    if (messageBox.clickedButton() == opt2Button) {
-// Put code here
+    if (messageBox.clickedButton() == opt2Button)
+    {
+        Settings.updateDealerStay(17);
     }
-    if (messageBox.clickedButton() == opt3Button) {
-// Put code here
+    if (messageBox.clickedButton() == opt3Button)
+    {
+        Settings.updateDealerStay(18);
     }
 }
 
@@ -800,14 +802,17 @@ void MainWindow::on_actionSurrender_return_values_triggered()
     QAbstractButton *opt3Button =
           messageBox.addButton(tr("50%"), QMessageBox::ActionRole);
     messageBox.exec();
-    if (messageBox.clickedButton() == opt1Button) {
-// Put code here
+    if (messageBox.clickedButton() == opt1Button)
+    {
+        Settings.updateSurrenderPay(0.25);
     }
-    if (messageBox.clickedButton() == opt2Button) {
-// Put code here
+    if (messageBox.clickedButton() == opt2Button)
+    {
+        Settings.updateSurrenderPay(0.40);
     }
-    if (messageBox.clickedButton() == opt3Button) {
-// Put code here
+    if (messageBox.clickedButton() == opt3Button)
+    {
+        Settings.updateSurrenderPay(0.50);
     }
 }
 
@@ -821,22 +826,40 @@ void MainWindow::on_actionSplit_triggered()
           messageBox.addButton(tr("On Suit"), QMessageBox::ActionRole);
     messageBox.exec();
     if (messageBox.clickedButton() == opt2Button) {
-// Put code here
+        Settings.updateSplit(true);
     }
     if (messageBox.clickedButton() == opt3Button) {
-// Put code here
+        Settings.updateSplit(false);
     }
 }
 
 void MainWindow::on_actionChange_Autobet_triggered()
 {
-setAutoMatedBet(-1);
-QMessageBox messageBox(this);
-messageBox.setText("Upon your next turn you will be able to change your bet.");
-QAbstractButton *opt2Button =
-      messageBox.addButton(tr("OK"), QMessageBox::ActionRole);
-if (messageBox.clickedButton() == opt2Button) {
-// Put code here
-}
+    QMessageBox messageBox(this);
+    QAbstractButton *opt2Button = messageBox.addButton(tr("OK"), QMessageBox::ActionRole);
+    if (automatedBet == -1)
+    {
+        setAutoMatedBet(0);
+        messageBox.setText("Upon your next turn you will be able to change your bet.");
+    }
+    else
+    {
+        setAutoMatedBet(-1);
+        messageBox.setText("You will automatically use your current bet on your next turn.");
+    }
+    if (messageBox.clickedButton() == opt2Button)
+    {
+    // Put code here
+    }
 messageBox.exec();
+}
+
+MainWindow::~MainWindow()
+{
+    Settings.writeRules();
+    for (int i = 0; i < Images.size(); ++i)
+    {
+        delete Images.takeAt(0);
+    }
+    delete ui;
 }

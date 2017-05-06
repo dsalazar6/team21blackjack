@@ -4,23 +4,20 @@
 #include <string>
 #include <fstream>
 #include <iostream>
-//#include <QColor>
+//#include <QString>
 using namespace std;
 
 class Rules
 {
 private:
-string winColor;
-QColor winQColor;
-string loseColor;
-QColor loseQColor;
+QString winColor;
+QString loseColor;
 int doubleDownMin;
 int doubleDownMax;
 int dealerStay;
-bool showCount; //If 1, shows the card count
-bool showRemaining; //If 1, shows the cards remaining in the deck
-bool showPrecise; //If 1, shows the counts for the individual cards. If 0, shows high/low count.
-bool splitOnFace;
+bool countPrecision; 	//If 0, shows high/low count; if 1. shows precise count
+bool countType;     // If 0, shows cards played; if 1 shows cards remaining
+bool splitOnFace;	//If 1, allows player to split on cards of the same value
 bool allowSurrender;
 double surrenderPay;
 double winPay;
@@ -31,16 +28,13 @@ double startMoney;
 public:
 Rules()
  {
-	winColor = "green";
-	winQColor = QColor(0,255,0);
-	loseColor = "red";
-	loseQColor = QColor(255,0,0);
+	winColor = QString("#00ff00");
+    loseColor = QString("#ff0000");
 	doubleDownMin = 9;
 	doubleDownMax = 11;
 	dealerStay = 17;
-	showCount = true;
-	showRemaining = true;
-	showPrecise = true;
+    countPrecision = false;
+	countType = false;
 	splitOnFace = false;
 	allowSurrender = true;
 	surrenderPay = 0.5;
@@ -48,255 +42,126 @@ Rules()
 	defaultBet = 5.00;
 	minBet = 5.00;
 	startMoney = 500.00;
-	//importRules();
  }
 
 void importRules() //Assumes file is formatted correctly
  {
-    string currentLine = "*";
+    string currentLine;
     fstream file;
     file.open("options.txt", ios::in);
     if (file.is_open() == false)
     {
-	   writeRules();
+       cout << "file not found" << endl;
+        writeRules();
 	   return;
     }
-	getline(file, currentLine);
-	winColor = currentLine;
-	winQColor = QColor(winColor);
-    getline(file,currentLine);
-	loseColor = currentLine;
-	loseQColor = QColor(loseColor);;
-    getline(file,currentLine);
-    doubleDownMin = readInt(currentLine);
-	doubleDownMax = readInt(currentLine);
-    getline(file,currentLine);
-	dealerStay = readInt(currentLine);
-	getline(file, currentLine);
-    showCount = (currentLine.compare("1") == 0 || currentLine.compare("true") == 0);
-    getline(file,currentLine);
-    showRemaining = (currentLine.compare("1") == 0 || currentLine.compare("true") == 0);
-    getline(file,currentLine);
-    showPrecise = (currentLine.compare("1") == 0 || currentLine.compare("true") == 0);
-    getline(file,currentLine);
-	splitOnFace = (currentLine.compare("1") == 0 || currentLine.compare("true") == 0);
-	getline(file, currentLine);
-	allowSurrender = (currentLine.compare("1") == 0 || currentLine.compare("true") == 0);
-	getline(file, currentLine);
-	surrenderPay = readDouble(currentLine);
-	getline(file, currentLine);
-	winPay = readDouble(currentLine);
-	getline(file, currentLine);
-    defaultBet = readDouble(currentLine);
-    getline(file,currentLine);
-    minBet = readDouble(currentLine);
-    getline(file,currentLine);
-    startMoney = readDouble(currentLine);
-    file.close();
+    getline(file, currentLine);
+    winColor = QString::fromStdString(currentLine);
+    getline(file, currentLine);
+    loseColor = QString::fromStdString(currentLine);
+	file >> doubleDownMin;
+	file >> doubleDownMax;
+	file >> dealerStay;
+    file >> countPrecision;
+	file >> countType;
+	file >> splitOnFace;
+	file >> allowSurrender;
+	file >> surrenderPay;
+	file >> winPay;
+	file >> defaultBet;
+	file >> minBet;
+	file >> startMoney;
+	file.close();
  }
 
-QColor getWinColor()
-{
-	winQColor = QColor(winColor);
-	return winQColor;
-}
+QString getWinColor(){ return winColor; }
 
-QColor getLoseColor()
-{
-	loseQColor = QColor(loseColor);
-	return loseQColor;
-}
+QString getLoseColor(){ return loseColor; }
 
-int getDDMin()
-{
-	return doubleDownMin;
-}
+int getDDMin(){ return doubleDownMin; }
 
-int getDDMax()
-{
-	return doubleDownMax;
-}
+int getDDMax(){ return doubleDownMax; }
 
-int getStay()
-{
-	return dealerStay;
-}
+int getStay(){ return dealerStay; }
 
-bool getShowCount()
-{
-	return showCount;
-}
+bool getCountPrecision(){ return countPrecision; }
 
-bool getShowRemaining()
-{
-	return showRemaining;
-}
+bool getCountType(){ return countType; }
 
-bool getShowPrecise()
-{
-	return showPrecise;
-}
+bool getSplitFace(){ return splitOnFace; }
 
-bool getSplitFace()
-{
-	return splitOnFace;
-}
+bool getAllowSurrender(){ return allowSurrender; }
 
-bool getAllowSurrender()
-{
-	return allowSurrender;
-}
+double getSurrenderPay(){ return surrenderPay; }
 
-double getSurrenderPay()
-{
-	return surrenderPay;
-}
+double getWinPay(){ return winPay; }
 
-double getWinPay()
-{
-	return winPay;
-}
+double getDefaultBet(){ return defaultBet; }
 
-double getDefaultBet()
-{
-	return defaultBet;
-}
+double getMinBet(){ return minBet; }
 
-double getMinBet()
-{
-	return minBet;
-}
-
-double getStartMoney()
-{
-	return startMoney;
-}
-
-int readInt(string &line)
-{
-	int i = 0;
-	int len = line.length();
-	while (line[i] < '0' || line[i] > '9')
-	{
-		i ++;
-		if (i >= len)
-		{
-			return 0;
-		}
-	}
-	int value = 0;
-	while (line[i] >= '0' && line[i] <= '9')
-	{
-		value = value * 10;
-		value = value + ((int)line[i] - 48);
-		i ++;
-	}
-	line = line.substr(i);
-	return value;
-}
-
-double readDouble(string &line)
-{
-    int i = 0;
-	int len = line.length();
-    while (line[i] < '0' || line[i] > '9')
-	   {
-		  i ++;
-		  if (i >= len)
-		  {
-			  return 0.0;
-		  }
-	   }
-	   double decimal = 0.0;
-	   int point = 0;
-	   while ((line[i] >= '0' && line[i] <= '9'))
-	   {
-		  decimal = decimal * 10;
-		  decimal = decimal + ((int)line[i] - 48);
-		  i ++;
-	   }
-	   if (line[i] == '.')
-	   {
-		  i++;
-		  while ((line[i] >= '0' && line[i] <= '9'))
-		  {
-			 decimal = decimal * 10.0;
-			 decimal = decimal + ((int)line[i] - 48);
-			 point ++;
-			 i ++;
-		  }
-		  for (int j = 0; j < point; j ++)
-		  {
-			 decimal = decimal * 0.1;
-		  }
-	   }
-	line = line.substr(i);
-    return decimal;
-}
+double getStartMoney(){ return startMoney; }
 
 void writeRules()
 {
     fstream file;
     file.open("options.txt", ios::out);
-    file << winColor[0] << ' ' << winColor[1] << ' ' << winColor[2] << '\n';
-    file << loseColor[0] << ' ' << loseColor[1] << ' ' << loseColor[2] << '\n';
-	file << doubleDownMin << ' ' << doubleDownMax << '\n';
-	file << dealerStay << '\n';
-    file << booltoString(showCount) << '\n';
-    file << booltoString(showRemaining) << '\n';
-    file << booltoString(showPrecise) << '\n';
-	file << booltoString(splitOnFace) << '\n';
-	file << booltoString(allowSurrender) << '\n';
-	file << surrenderPay << '\n';
-	file << winPay << '\n';
-    file << defaultBet << '\n';
-    file << minBet << '\n';
-    file << startMoney << '\n';
-    file.close();
+    file << winColor.toStdString() << endl;
+    file << loseColor.toStdString() << endl;
+	file << doubleDownMin << endl;
+	file << doubleDownMax << endl;
+	file << dealerStay << endl;
+    file << countPrecision << endl;
+	file << countType << endl;
+	file << splitOnFace << endl;
+	file << allowSurrender << endl;
+	file << surrenderPay << endl;
+	file << winPay << endl;
+	file << defaultBet << endl;
+	file << minBet << endl;
+	file << startMoney << endl;
+	file.close();
     //printAll();
 }
 
-string booltoString(bool in)
+void updateWinColor(string newWin)
 {
-	if (in == true)
-	{
-		return "true";
-	}
-	return "false";
+    winColor = QString::fromStdString(newWin);
 }
 
-void updateWinColor(int r, int g, int b)
+void updateLoseColor(string newLose)
 {
-	winColor[0] = r % 256;
-	winColor[1] = g % 256;
-	winColor[2] = b % 256;
-	//winQColor = QColor(winColor[0], winColor[1], winColor[2]);
+    loseColor = QString::fromStdString(newLose);
 }
 
-void updateLoseColor(int r, int g, int b)
-{
-	loseColor[0] = r % 256;
-	loseColor[1] = g % 256;
-	loseColor[2] = b % 256;
-	//loseQColor = QColor(loseColor[0], loseColor[1], loseColor[2]);
+void updateDoubleDown(int min, int max) {
+    doubleDownMin = min;
+    doubleDownMax = max;
 }
 
-void updateCasinoRules(int min, int max, int stay, bool onFace, bool surrender, double sPay, double wPay)
-{
-	doubleDownMin = min;
-	doubleDownMax = max;
-	dealerStay = stay;
-	splitOnFace = onFace;
-	allowSurrender = surrender;
-	surrenderPay = sPay;
-	winPay = wPay;
+void updateDealerStay(int stay) {
+    dealerStay = stay;
 }
 
-void updateCardCount(bool show, bool rem, bool pres)
+void updateSplit(bool face) {
+    splitOnFace = face;
+}
+
+void updateSurrender(bool surr) {
+    allowSurrender = surr;
+}
+
+void updateSurrenderPay(double sPay) {
+    surrenderPay = sPay;
+}
+
+void updateWinPay (double wPay) {
+    winPay = wPay;
+}
+
+void updateCardCount(bool count)
 {
-	showCount = show;
-	showRemaining = rem;
-	showPrecise = pres;
+	countType = count;
 }
 
 void updateDefaultBet(double bet)
@@ -310,22 +175,39 @@ void updateMoney(double mBet, double base)
 	startMoney = base;
 }
 
+void reset() {
+    winColor = QString("#00ff00");
+    loseColor = QString("#ff0000");
+    doubleDownMin = 9;
+    doubleDownMax = 11;
+    dealerStay = 17;
+    countPrecision = false;
+    countType = false;
+    splitOnFace = false;
+    allowSurrender = true;
+    surrenderPay = 0.5;
+    winPay = 1.0;
+    defaultBet = 5.00;
+    minBet = 5.00;
+    startMoney = 500.00;
+}
+
 void printAll() //used for debug
 {
-	cout << winColor[0] << ' ' << winColor[1] << ' ' << winColor[2] << '\n';
-	cout << loseColor[0] << ' ' << loseColor[1] << ' ' << loseColor[2] << '\n';
-	cout << doubleDownMin << ' ' << doubleDownMax << '\n';
-	cout << dealerStay << '\n';
-	cout << booltoString(showCount) << '\n';
-	cout << booltoString(showRemaining) << '\n';
-	cout << booltoString(showPrecise) << '\n';
-	cout << booltoString(splitOnFace) << '\n';
-	cout << booltoString(allowSurrender) << '\n';
-	cout << surrenderPay << '\n';
-	cout << winPay << '\n';
-	cout << defaultBet << '\n';
-	cout << minBet << '\n';
-	cout << startMoney << '\n';
+	cout << winColor.toStdString() << endl;
+    cout << loseColor.toStdString() << endl;
+	cout << doubleDownMin << endl;
+	cout << doubleDownMax << endl;
+	cout << dealerStay << endl;
+    cout << countPrecision << endl;
+	cout << countType << endl;
+	cout << splitOnFace << endl;
+	cout << allowSurrender << endl;
+	cout << surrenderPay << endl;
+	cout << winPay << endl;
+	cout << defaultBet << endl;
+	cout << minBet << endl;
+	cout << startMoney << endl;
 }
 
  ~Rules() {}
