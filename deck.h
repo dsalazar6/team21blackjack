@@ -133,6 +133,13 @@ public:
 
     }
 
+    /* Functions to help with keeping track of cards used, taking account of card value
+       getLowCount()
+       getHighCount()
+       getCardCount()
+       changeCardCount()
+       setRemainingUsed()
+    */
     int getLowCount()
     {
         if (remainingUsed)
