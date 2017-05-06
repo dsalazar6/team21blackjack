@@ -68,11 +68,17 @@ private slots:
     //Whenever the user clicks on Double_Down, it will call this function
     void on_Double_Down_clicked();
 
+    // Wnenever the user clicks on Surrender, it will call this function
     void on_Surrender_clicked();
 
+    // Whenever the user clicks on Card Count, it will call this function
     void on_pushButton_clicked();
 
-    // Functions to change text colors for bust, surrender, win, and lose in the Settings - Color Settings
+    /* Functions to change text colors for bust, surrender, win, and lose in the Settings - Color Settings
+       on_actionBust_triggered()
+       on_actionSurrender_triggered()
+       on_actionWin_triggered()
+       on_actionLoes_triggered() */
     void on_actionBust_triggered();
 
     void on_actionSurrender_triggered();
@@ -81,7 +87,11 @@ private slots:
 
     void on_actionLose_triggered();
 
-    // Functions to apply to the different Rule options of the game
+    /* Functions to apply to the different Rule options of the game
+       on_actionDoubleDown_triggered()
+       on_actionDealer_Stays_on_triggered()
+       on_actionSurrender_return_values_triggered() 
+       on_actionSplit_triggered() */
     void on_actionDouble_Down_triggered();
 
     void on_actionDealer_Stays_on_triggered();
@@ -90,6 +100,7 @@ private slots:
 
     void on_actionSplit_triggered();
 
+    // Function to allow automated bet until the player decides to change the bet value in settings
     void on_actionChange_Autobet_triggered();
 
 public:
